@@ -1,4 +1,12 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  afterNextRender,
+  effect,
+  inject,
+} from '@angular/core';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { HudComponent } from './components/hud/hud.component';
 import { BootComponent } from './components/boot/boot.component';
@@ -15,7 +23,9 @@ import { WritingComponent } from './components/writing/writing.component';
 import { CertificationsComponent } from './components/certifications/certifications.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { ConsentComponent } from './components/consent/consent.component';
 import { SeoService } from './core/services/seo.service';
+import { AnalyticsService } from './core/services/analytics.service';
 import { PORTFOLIO } from './core/data/portfolio.data';
 
 const SITE_URL = 'https://outhanchazima.dev/';
@@ -39,6 +49,7 @@ const SITE_URL = 'https://outhanchazima.dev/';
     CertificationsComponent,
     ContactComponent,
     FooterComponent,
+    ConsentComponent,
   ],
   template: `
     <app-boot />
@@ -59,11 +70,28 @@ const SITE_URL = 'https://outhanchazima.dev/';
       <app-contact />
     </main>
     <app-footer />
+    <app-consent />
   `,
 })
 export class App implements OnInit, AfterViewInit {
   private readonly seo = inject(SeoService);
   private readonly viewport = inject(ViewportService);
+  private readonly analytics = inject(AnalyticsService);
+
+  constructor() {
+    // Browser-only: restore consent + start PostHog if previously granted.
+    afterNextRender(() => this.analytics.bootstrap());
+
+    // Track which section a visitor is reading (deduped per session).
+    const seenSections = new Set<string>();
+    effect(() => {
+      const id = this.viewport.activeId();
+      if (id && !seenSections.has(id)) {
+        seenSections.add(id);
+        this.analytics.capture('section_viewed', { section: id });
+      }
+    });
+  }
 
   ngAfterViewInit(): void {
     // All sections are now in the DOM — wire up scroll-spy + progress.

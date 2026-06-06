@@ -1044,6 +1044,66 @@ h2 {
   box-shadow: 0 0 8px currentColor;
 }
 
+/* ===================== ANALYTICS CONSENT ===================== */
+.consent {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 120;
+  width: min(380px, calc(100vw - 32px));
+  background: color-mix(in srgb, var(--ink-2) 94%, transparent);
+  backdrop-filter: blur(10px);
+  padding: 18px 18px 16px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
+  animation: consent-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes consent-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+.consent-text {
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.consent-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.consent-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  background: var(--ink-3);
+  color: var(--muted);
+  cursor: pointer;
+  border: 0;
+  transition: 0.25s;
+}
+.consent-btn:hover {
+  color: var(--paper);
+}
+.consent-btn.primary {
+  background: var(--signal);
+  color: var(--on-signal);
+  font-weight: 600;
+}
+.consent-btn.primary:hover {
+  color: var(--on-signal);
+  box-shadow: 0 8px 24px var(--glow-amber);
+}
+@media (prefers-reduced-motion: reduce) {
+  .consent {
+    animation: none;
+  }
+}
+
 
 /* ===================== WORK (projects) ======================= */
 .work {
