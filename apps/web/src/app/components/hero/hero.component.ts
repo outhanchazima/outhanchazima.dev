@@ -1,125 +1,137 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+  inject,
+  signal,
+} from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { PORTFOLIO } from '../../core/data/portfolio.data';
-import { IconComponent } from '../../shared/icon.component';
 
 @Component({
   selector: 'app-hero',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IconComponent],
   template: `
-    <section id="top" class="relative overflow-hidden">
-      <div class="grid-bg pointer-events-none absolute inset-0 -z-10 h-[120%]" aria-hidden="true"></div>
-      <div
-        class="pointer-events-none absolute left-1/2 top-0 -z-10 h-72 w-[40rem] -translate-x-1/2 rounded-full bg-accent/20 blur-[100px]"
-        aria-hidden="true"
-      ></div>
+    <header id="top" class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="tag reveal d1">{{ profile.role }} · {{ profile.location }}</span>
+          <h1 class="reveal d2" [innerHTML]="headline"></h1>
+          <p class="hero-sub reveal d3" [innerHTML]="tagline"></p>
 
-      <div class="mx-auto max-w-6xl px-4 pb-16 pt-32 sm:px-6 sm:pt-40">
-        <div class="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
-          <div>
-            <span
-              class="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-muted"
-            >
-              <span class="relative flex h-2 w-2">
-                <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
-                <span class="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
-              </span>
-              Available for senior & staff engineering roles
-            </span>
-
-            <h1 class="mt-6 text-4xl font-extrabold tracking-tight text-ink sm:text-6xl">
-              {{ profile.name }}
-            </h1>
-            <p class="mt-3 text-xl font-semibold text-accent-ink sm:text-2xl">
-              {{ profile.role }}
-            </p>
-            <p class="mt-1 font-mono text-sm text-muted">
-              {{ profile.specialism }}
-            </p>
-
-            <p class="mt-6 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
-              {{ profile.tagline }}
-            </p>
-
-            <div class="mt-8 flex flex-wrap items-center gap-3">
-              <a
-                href="#work"
-                class="inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-3 text-sm font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5"
-              >
-                View my work
-                <app-icon name="arrow-right" [size]="18" />
-              </a>
-              <a
-                href="/Outhan-Chazima-Resume.pdf"
-                class="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-5 py-3 text-sm font-semibold text-ink transition-colors hover:border-accent"
-                download
-              >
-                <app-icon name="resume" [size]="18" />
-                Download résumé
-              </a>
-            </div>
-
-            <div class="mt-8 flex items-center gap-3">
-              @for (social of profile.socials; track social.url) {
-                <a
-                  [href]="social.url"
-                  [attr.aria-label]="social.label"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="grid h-10 w-10 place-items-center rounded-lg border border-border bg-surface text-muted transition-colors hover:text-accent-ink hover:border-accent"
-                >
-                  <app-icon [name]="social.icon" [size]="18" />
-                </a>
-              }
-              <span class="inline-flex items-center gap-1.5 pl-1 text-sm text-faint">
-                <app-icon name="location" [size]="16" />
-                {{ profile.location }}
-              </span>
-            </div>
+          <div class="btn-row reveal d4">
+            <a class="btn primary" href="#contact">Start a conversation</a>
+            <a class="btn ghost" href="#experience">View the build log ↓</a>
           </div>
 
-          <!-- Architecture "blueprint" card -->
-          <div class="relative" aria-hidden="true">
-            <div
-              class="overflow-hidden rounded-card border border-border bg-surface shadow-xl shadow-black/5"
-            >
-              <div class="flex items-center gap-2 border-b border-border bg-surface-2 px-4 py-3">
-                <span class="h-3 w-3 rounded-full bg-red-400/80"></span>
-                <span class="h-3 w-3 rounded-full bg-amber-400/80"></span>
-                <span class="h-3 w-3 rounded-full bg-emerald-400/80"></span>
-                <span class="ml-2 font-mono text-xs text-faint">system-design.ts</span>
-              </div>
-              <pre
-                class="overflow-x-auto p-5 font-mono text-[13px] leading-relaxed text-muted"
-                [innerHTML]="codeHtml"
-              ></pre>
-            </div>
+          <div class="hero-meta reveal d5">
+            @for (item of profile.meta; track item.label) {
+              <div><b>{{ item.value }}</b>{{ item.label }}</div>
+            }
+          </div>
+        </div>
+
+        <!-- Animated architecture schematic: clients → gateway → services → data -->
+        <div class="diagram reveal d6" aria-hidden="true">
+          <svg viewBox="-52 -38 564 502" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- drafting dimension lines (annotations) -->
+            <g class="dg-dim">
+              <line x1="-30" y1="22" x2="-30" y2="380" />
+              <line x1="-35" y1="22" x2="-25" y2="22" />
+              <line x1="-35" y1="380" x2="-25" y2="380" />
+            </g>
+            <text class="dg-dim-text" x="-38" y="201" text-anchor="middle" transform="rotate(-90 -38 201)">
+              4 TIERS
+            </text>
+            <g class="dg-dim">
+              <line x1="50" y1="-20" x2="410" y2="-20" />
+              <line x1="50" y1="-25" x2="50" y2="-15" />
+              <line x1="410" y1="-25" x2="410" y2="-15" />
+            </g>
+            <text class="dg-dim-text" x="230" y="-26" text-anchor="middle">SPAN ·3 SVC</text>
+            <!-- leader annotation on the gateway -->
+            <g class="dg-dim">
+              <line x1="305" y1="120" x2="452" y2="96" />
+              <circle cx="305" cy="120" r="2" />
+            </g>
+            <text class="dg-dim-text" x="455" y="92" text-anchor="start">LOAD·BAL</text>
+
+            <path class="flow dg-flow-cyan" d="M230 64 V108" stroke-width="1.4" />
+            <path class="flow dg-flow-cyan" d="M230 156 V186 H110 V216" stroke-width="1.4" />
+            <path class="flow dg-flow-cyan" d="M230 156 V216" stroke-width="1.4" />
+            <path class="flow dg-flow-cyan" d="M230 156 V186 H350 V216" stroke-width="1.4" />
+            <path class="flow dg-flow-amber" d="M110 268 V300 H190 V330" stroke-width="1.4" />
+            <path class="flow dg-flow-amber" d="M230 268 V330" stroke-width="1.4" />
+            <path class="flow dg-flow-amber" d="M350 268 V300 H270 V330" stroke-width="1.4" />
+
+            <rect class="dg-box" x="170" y="22" width="120" height="42" rx="4" />
+            <text class="dg-text" x="230" y="48" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" letter-spacing="2">CLIENTS</text>
+
+            <rect class="dg-box-amber node-pulse" x="155" y="108" width="150" height="48" rx="4" />
+            <text class="dg-text-amber" x="230" y="136" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" letter-spacing="2">API GATEWAY</text>
+
+            <rect class="dg-box-cyan" x="50" y="216" width="120" height="52" rx="4" />
+            <text class="dg-text" x="110" y="246" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" letter-spacing="1.5">PAYMENTS</text>
+            <rect class="dg-box-cyan" x="170" y="216" width="120" height="52" rx="4" />
+            <text class="dg-text" x="230" y="246" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" letter-spacing="1.5">BOOKINGS</text>
+            <rect class="dg-box-cyan" x="290" y="216" width="120" height="52" rx="4" />
+            <text class="dg-text" x="350" y="246" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" letter-spacing="1.5">NOTIFICATIONS</text>
+
+            <rect class="dg-box-amber node-pulse" x="140" y="330" width="180" height="50" rx="4" />
+            <text class="dg-text-amber" x="230" y="359" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" letter-spacing="2">DATA / EVENT BUS</text>
+
+            <path class="dg-mark" d="M10 10 H30 M10 10 V30" />
+            <path class="dg-mark" d="M450 410 H430 M450 410 V390" />
+          </svg>
+          <div class="caption">
+            <span>FIG. 01 — REFERENCE TOPOLOGY</span>
+            <span>{{ uptime() }}</span>
           </div>
         </div>
       </div>
-    </section>
+    </header>
   `,
 })
-export class HeroComponent {
+export class HeroComponent implements OnInit, OnDestroy {
   private readonly sanitizer = inject(DomSanitizer);
-  protected readonly profile = PORTFOLIO.profile;
+  private readonly platformId = inject(PLATFORM_ID);
+  private timer?: ReturnType<typeof setInterval>;
+  private startMs = 0;
 
-  /** Syntax-highlighted hero snippet. Static & trusted — bypasses sanitisation. */
-  protected readonly codeHtml: SafeHtml = this.sanitizer.bypassSecurityTrustHtml(
-    [
-      `<span class="text-faint">// scalable by design</span>`,
-      `<span class="text-accent-ink">const</span> platform = architect({`,
-      `  ingest:   <span class="text-accent-ink">'Kafka'</span>,`,
-      `  store:    [<span class="text-accent-ink">'Cassandra'</span>, <span class="text-accent-ink">'PostgreSQL'</span>],`,
-      `  cache:    <span class="text-accent-ink">'Redis'</span>,`,
-      `  services: [<span class="text-accent-ink">'Django'</span>, <span class="text-accent-ink">'NestJS'</span>],`,
-      `  edge:     <span class="text-accent-ink">'Angular + SSR'</span>,`,
-      `  deploy:   [<span class="text-accent-ink">'Docker'</span>, <span class="text-accent-ink">'Kubernetes'</span>],`,
-      `});`,
-      ``,
-      `platform.<span class="text-ink">scale</span>(<span class="text-accent-ink">'production'</span>);`,
-      `<span class="text-faint">// → 2M+ KES / day, 100% cashless</span>`,
-    ].join('\n'),
+  protected readonly profile = PORTFOLIO.profile;
+  protected readonly headline: SafeHtml = this.sanitizer.bypassSecurityTrustHtml(
+    PORTFOLIO.profile.headlineHtml,
   );
+  protected readonly tagline: SafeHtml = this.sanitizer.bypassSecurityTrustHtml(
+    PORTFOLIO.profile.taglineHtml,
+  );
+
+  /** Playful "uptime" clock in the diagram caption — browser-only. */
+  protected readonly uptime = signal('UPTIME 00:00:00');
+
+  ngOnInit(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+    this.startMs = Date.now();
+    this.timer = setInterval(() => this.tick(), 1000);
+    this.tick();
+  }
+
+  ngOnDestroy(): void {
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
+  }
+
+  private tick(): void {
+    const s = Math.floor((Date.now() - this.startMs) / 1000);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    this.uptime.set(
+      `UPTIME ${pad(Math.floor(s / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`,
+    );
+  }
 }

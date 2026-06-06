@@ -1,22 +1,15 @@
-import {
-  AfterViewInit,
-  Directive,
-  ElementRef,
-  OnDestroy,
-  PLATFORM_ID,
-  inject,
-} from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 /**
- * Progressive-enhancement reveal-on-scroll. Adds `.is-visible` when the host
- * enters the viewport. On the server (or without IntersectionObserver) the
- * element is shown immediately, so content is never hidden from crawlers or
- * users with JS disabled — the base `.reveal` styles handle that gracefully.
+ * Progressive-enhancement scroll reveal. The host carries the `.sr` base class
+ * (hidden + transform); this adds `.in` when it enters the viewport, triggering
+ * the CSS transition. On the server (or without IntersectionObserver) it reveals
+ * immediately, so content is never hidden from crawlers or no-JS users.
  */
 @Directive({
   selector: '[appReveal]',
-  host: { class: 'reveal' },
+  host: { class: 'sr' },
 })
 export class RevealDirective implements AfterViewInit, OnDestroy {
   private readonly el = inject(ElementRef<HTMLElement>);
@@ -25,7 +18,7 @@ export class RevealDirective implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId) || typeof IntersectionObserver === 'undefined') {
-      this.el.nativeElement.classList.add('is-visible');
+      this.el.nativeElement.classList.add('in');
       return;
     }
 
@@ -33,12 +26,12 @@ export class RevealDirective implements AfterViewInit, OnDestroy {
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
+            entry.target.classList.add('in');
             this.observer?.unobserve(entry.target);
           }
         }
       },
-      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' },
+      { threshold: 0.15 },
     );
     this.observer.observe(this.el.nativeElement);
   }

@@ -5,34 +5,92 @@ export const PORTFOLIO: Portfolio = {
   profile: {
     name: 'Outhan Chazima',
     role: 'Senior Software Engineer',
-    specialism: 'System Design & Architecture',
-    location: 'Nairobi, Kenya',
-    email: 'outhanchazima@gmail.com',
-    phone: '+254 714 690 698',
-    tagline:
-      'I design and build scalable software that runs in production — payment rails, real-time analytics and distributed services that move millions in transactions every day.',
-    summary: [
-      'I am a senior software engineer with a deep focus on system design and architecture. Over the last several years I have led the design of backend platforms that process financial transactions at national scale across Kenya — for airports, ports, regulators and payment service providers.',
-      'My work sits where correctness, throughput and reliability matter most: event-driven analytics on Kafka and Cassandra, disbursement and billing microservices on Django and Node, USSD gateways spanning every major telco, and the Angular dashboards that make all of it observable. I care about clean, maintainable systems and the infrastructure — Docker, Kubernetes, Linux — that keeps them running.',
+    location: 'Nairobi, KE',
+    headlineHtml: 'I design systems<br>that <em>scale</em> and<br>architectures that <em>last</em>.',
+    taglineHtml:
+      'Outhan Chazima — specializing in <b>system design &amp; architecture</b>. ' +
+      'I turn ambiguous product problems into resilient, distributed, well-documented ' +
+      'systems — currently engineering travel-tech infrastructure at <b>Triply.co</b>.',
+    meta: [
+      { value: '6+', label: 'years engineering' },
+      { value: 'BSc', label: 'Math & Computer Science' },
+      { value: '145+', label: 'public repositories' },
+      { value: 'IBM', label: 'Big Data Engineer awards' },
     ],
     socials: [
-      { label: 'GitHub', url: 'https://github.com/outhanchazima', icon: 'github' },
-      { label: 'LinkedIn', url: 'https://www.linkedin.com/in/outhan-chazima/', icon: 'linkedin' },
-      { label: 'Email', url: 'mailto:outhanchazima@gmail.com', icon: 'email' },
+      { label: 'LinkedIn', url: 'https://www.linkedin.com/in/outhan-chazima/' },
+      { label: 'GitHub', url: 'https://github.com/outhanchazima' },
+      { label: 'Medium', url: 'https://medium.com/@outhan254' },
     ],
   },
 
+  ticker: [
+    'Distributed Systems',
+    'Microservices',
+    'Event-Driven Architecture',
+    'Node.js / TypeScript',
+    'Python / Django',
+    'PostgreSQL',
+    'Apache Kafka',
+    'Redis',
+    'Message Queues',
+    'Docker & Kubernetes',
+    'Cloud Infrastructure',
+    'Payments & Fintech',
+    'API Design',
+    'Observability',
+  ],
+
   stats: [
-    { value: '4+', label: 'Years in production', detail: 'Engineering systems used at national scale' },
-    { value: '100M+', label: 'KES disbursed', detail: 'Through a disbursement platform I architected' },
+    { value: '6+', label: 'Years in production', detail: 'Systems used at national scale' },
+    { value: '100M+', label: 'KES disbursed', detail: 'Via a disbursement platform I architected' },
     { value: '2M+', label: 'KES collected / day', detail: 'Airport revenue collection across Kenya' },
-    { value: '100%', label: 'Cashless collection', detail: 'Ferry payments migrated to M-Pesa & eCitizen' },
+    { value: '100%', label: 'Cashless collection', detail: 'Ferry payments on M-Pesa & eCitizen' },
+  ],
+
+  expertise: [
+    {
+      id: 'NODE.01',
+      title: 'System Design',
+      description:
+        'Capacity planning, data modeling, API contracts, and trade-off analysis. I design for the failure modes first — then for the happy path.',
+    },
+    {
+      id: 'NODE.02',
+      title: 'Distributed Architecture',
+      description:
+        "Event-driven microservices, message queues, idempotency, and eventual consistency — systems that stay correct when networks don't.",
+    },
+    {
+      id: 'NODE.03',
+      title: 'Scalability Engineering',
+      description:
+        'Caching strategies, database sharding, horizontal scaling, and load testing to take systems from thousands to millions of requests.',
+    },
+    {
+      id: 'NODE.04',
+      title: 'Payments & Fintech Infrastructure',
+      description:
+        'Battle-tested experience building payment rails and transaction systems where double-charges and lost ledger entries are not an option.',
+    },
+    {
+      id: 'NODE.05',
+      title: 'API & Platform Design',
+      description:
+        'Clean, versioned, well-documented interfaces — REST and event APIs that other teams can build on without reading the source.',
+    },
+    {
+      id: 'NODE.06',
+      title: 'Technical Leadership',
+      description:
+        'Architecture reviews, design docs, mentoring engineers, and aligning system decisions with product and business goals.',
+    },
   ],
 
   skillGroups: [
     {
+      id: 'STK.01',
       title: 'Architecture & Design',
-      icon: 'architecture',
       skills: [
         'System Design',
         'Microservices',
@@ -43,99 +101,36 @@ export const PORTFOLIO: Portfolio = {
       ],
     },
     {
+      id: 'STK.02',
       title: 'Languages',
-      icon: 'code',
       skills: ['TypeScript', 'Python', 'Go', 'Java', 'JavaScript', 'SQL'],
     },
     {
+      id: 'STK.03',
       title: 'Backend',
-      icon: 'server',
       skills: ['Django', 'NestJS', 'Node.js', 'Flask', 'Express', 'Celery'],
     },
     {
+      id: 'STK.04',
       title: 'Frontend',
-      icon: 'layout',
       skills: ['Angular', 'TailwindCSS', 'RxJS / Signals', 'HTML5 & CSS3', 'Vue.js'],
     },
     {
+      id: 'STK.05',
       title: 'Data & Messaging',
-      icon: 'database',
       skills: ['PostgreSQL', 'Apache Kafka', 'Apache Cassandra', 'Redis', 'Apache Hadoop', 'MySQL'],
     },
     {
+      id: 'STK.06',
       title: 'Infrastructure & DevOps',
-      icon: 'cloud',
       skills: ['Docker', 'Kubernetes', 'Linux', 'Nginx', 'Cloudflare', 'Azure DevOps', 'CI/CD'],
-    },
-  ],
-
-  experience: [
-    {
-      company: 'Jambopay · WebTribe Limited',
-      role: 'Software Engineer',
-      period: 'Mar 2022 — Present',
-      location: 'Nairobi, Kenya',
-      current: true,
-      summary:
-        'Lead the design and delivery of payment, revenue-collection and analytics platforms serving government agencies and payment service providers across Kenya.',
-      highlights: [
-        'Architected a real-time analytics dashboard ingesting transactions from every company system via Kafka, Django, Cassandra and Redis — cutting data processing time by 30% and streaming live revenue/profit insights to TV and mobile dashboards.',
-        'Led the architecture of a disbursement platform (Django, Node.js, PostgreSQL, Redis, Angular) that has disbursed 100M+ KES across channels, improving disbursement efficiency by 40%.',
-        'Built the Kenya Airports Authority revenue-collection system, leading a team of 4 and driving daily collections past 2M KES through USSD, POS enforcement and eCitizen / M-Pesa STK push.',
-        'Delivered the Kenya Ports Authority ferry payment system (NestJS, PostgreSQL), lifting daily collections from under $6k to ~$23k and reaching 100% cashless collection.',
-        'Designed a multi-telco USSD proxy (NestJS) bridging Safaricom, Airtel and Telkom, and a universal billing microservice (Django) that improved reporting by 50%.',
-      ],
-      stack: ['Django', 'NestJS', 'Kafka', 'Cassandra', 'PostgreSQL', 'Redis', 'Angular', 'Node.js'],
-    },
-    {
-      company: 'BeanSoft',
-      role: 'Software Engineer',
-      period: 'Feb 2021 — Mar 2022',
-      location: 'Machakos, Kenya',
-      current: false,
-      summary:
-        'Designed and built a crypto-exchange platform with automated trading strategies for retail users.',
-      highlights: [
-        'Engineered a crypto-exchange integrated with Dollar-Cost-Averaging and Grid trading bots.',
-        'Built Python/Flask services backed by Redis, Celery and PostgreSQL, integrated with the Binance API.',
-        'Containerised and deployed services with Docker and Nginx on CentOS.',
-      ],
-      stack: ['Python', 'Flask', 'Celery', 'Redis', 'PostgreSQL', 'Binance API', 'Docker', 'Vue.js'],
-    },
-    {
-      company: 'Art Touch Enterprise',
-      role: 'Software Engineer & Designer',
-      period: '2015 — Present',
-      location: 'Eldoret, Kenya',
-      current: true,
-      summary:
-        'Blend engineering and design — building the e-commerce and inventory systems behind an educational-products business.',
-      highlights: [
-        'Built an e-commerce platform (web + app) for puzzles and learning resources, with a high-performance API on Bun and Elysia.',
-        'Developed an inventory and business-management system that automated day-to-day operations.',
-        'Owned product branding and UI/UX alongside the engineering.',
-      ],
-      stack: ['Bun', 'Elysia', 'PostgreSQL', 'Redis', 'TypeScript', 'Angular'],
-    },
-    {
-      company: 'United States International University (USIU)',
-      role: 'Software Support Intern',
-      period: 'May 2019 — Aug 2019',
-      location: 'Nairobi, Kenya',
-      current: false,
-      summary: 'Supported campus IT systems and Active Directory administration.',
-      highlights: [
-        'Installed and managed Active Directory user accounts and delegated roles.',
-        'Maintained systems and software packages and planned upgrades for efficiency.',
-      ],
-      stack: ['Active Directory', 'Windows Server', 'Linux'],
     },
   ],
 
   projects: [
     {
       name: 'Real-Time Analytics Dashboard',
-      context: 'Jambopay',
+      context: 'JamboPay',
       tag: 'Real-time',
       featured: true,
       description:
@@ -149,12 +144,16 @@ export const PORTFOLIO: Portfolio = {
     },
     {
       name: 'Disbursement Platform',
-      context: 'Jambopay',
+      context: 'JamboPay',
       tag: 'Payments',
       featured: true,
       description:
         'Backend platform for high-volume disbursements across multiple channels, with an Angular operations console. Led the system architecture end-to-end.',
-      impact: ['100M+ KES disbursed', '40% improvement in disbursement efficiency', 'Multi-channel payout routing'],
+      impact: [
+        '100M+ KES disbursed',
+        '40% improvement in disbursement efficiency',
+        'Multi-channel payout routing',
+      ],
       stack: ['Django', 'Node.js', 'PostgreSQL', 'Redis', 'Angular'],
     },
     {
@@ -179,7 +178,7 @@ export const PORTFOLIO: Portfolio = {
     },
     {
       name: 'Multi-Telco USSD Proxy',
-      context: 'Jambopay',
+      context: 'JamboPay',
       tag: 'Platform',
       featured: true,
       description:
@@ -221,10 +220,126 @@ export const PORTFOLIO: Portfolio = {
     },
   ],
 
+  experience: [
+    {
+      role: 'Senior Software Engineer',
+      company: 'Triply.co — Travel-tech, Nairobi',
+      when: 'Current',
+      current: true,
+      summary:
+        'Designing and scaling the core platform behind a travel-tech product — booking flows, payment integrations, and the services that hold them together.',
+      highlights: [
+        'Own architecture decisions across booking, payments, and notification services.',
+        'Design event-driven workflows for reliability under unpredictable third-party APIs.',
+        'Lead design reviews and mentor engineers on system-design thinking.',
+      ],
+      chips: ['Node.js', 'TypeScript', 'PostgreSQL', 'Redis', 'Event-driven', 'Cloud'],
+    },
+    {
+      role: 'Software Engineer',
+      company: 'JamboPay (WebTribe) — Payments & Fintech',
+      when: 'Previous',
+      current: false,
+      summary:
+        "Designed and led payment, revenue-collection and analytics platforms at one of Kenya's established fintech players — high-volume transaction processing where correctness is everything.",
+      highlights: [
+        'Led the architecture of a disbursement platform (Django, Node.js, PostgreSQL, Redis) that disbursed 100M+ KES, improving disbursement efficiency by 40%.',
+        'Built the Kenya Airports Authority revenue system — leading a team of 4 — driving daily collections past 2M KES via USSD, POS enforcement and eCitizen / M-Pesa.',
+        'Delivered the Kenya Ports Authority ferry payment system (NestJS, PostgreSQL): lifted daily collections from ~$6k to ~$23k and reached 100% cashless collection.',
+        'Architected a real-time analytics platform on Kafka, Cassandra and Redis that cut data-processing time by 30% and streamed live revenue to TV & mobile dashboards.',
+        'Designed a multi-telco USSD proxy (NestJS) bridging Safaricom, Airtel and Telkom, plus a billing microservice that improved reporting by 50%.',
+      ],
+      chips: ['Django', 'NestJS', 'Kafka', 'Cassandra', 'PostgreSQL', 'Redis', 'Payments'],
+    },
+    {
+      role: 'Software Developer',
+      company: 'BeanSoft Technologies',
+      when: 'Earlier',
+      current: false,
+      summary:
+        'Full-stack product development — shipping features end to end and building the engineering fundamentals that later grew into an architecture focus.',
+      highlights: [
+        'Built a crypto-exchange platform with Dollar-Cost-Averaging and Grid trading bots.',
+        'Python/Flask services on Redis, Celery and PostgreSQL, integrated with the Binance API.',
+      ],
+      chips: ['Python', 'Flask', 'Celery', 'Redis', 'Vue.js', 'Docker'],
+    },
+    {
+      role: 'BSc Mathematics & Computer Science',
+      company: 'Machakos University',
+      when: '2016 — 2020',
+      current: false,
+      summary:
+        'Mathematical foundations behind the engineering — plus IBM Big Data Engineer Explorer & Mastery awards (2019) and a Google Africa Development Scholarship.',
+      highlights: [],
+      chips: ['Applied Mathematics', 'Algorithms', 'Big Data'],
+    },
+  ],
+
+  principles: [
+    {
+      num: '01',
+      title: 'Design for failure, not demos',
+      description:
+        'Every dependency will eventually time out, duplicate, or lie. Good architecture assumes it from day one.',
+    },
+    {
+      num: '02',
+      title: 'Boring technology, exciting outcomes',
+      description:
+        'Proven tools, well-understood patterns. Novelty belongs in the product, not in the production database.',
+    },
+    {
+      num: '03',
+      title: 'Diagrams before deployments',
+      description:
+        "If a system can't be explained on one whiteboard, it can't be debugged at 3 a.m. either.",
+    },
+    {
+      num: '04',
+      title: 'Scale is a measurement, not a guess',
+      description:
+        'Capacity decisions come from numbers — load tests, p99 latencies, and growth curves — not vibes.',
+    },
+  ],
+
+  writing: [
+    {
+      ref: 'LOG.001',
+      title: 'JavaScript Generators, under the hood',
+      blurb: 'What they are, how they work, and where they shine in real projects.',
+      url: 'https://medium.com/@outhan254',
+    },
+    {
+      ref: 'LOG.002',
+      title: 'More engineering notes on Medium',
+      blurb: 'AI/ML experiments, blockchain explorations, and systems thinking.',
+      url: 'https://medium.com/@outhan254',
+    },
+    {
+      ref: 'LOG.003',
+      title: '145+ repositories on GitHub',
+      blurb: 'Open code, experiments, and tools — @outhanchazima.',
+      url: 'https://github.com/outhanchazima',
+    },
+  ],
+
   certifications: [
     { title: 'Software Architecture: Patterns for Developers', issuer: 'LinkedIn Learning', year: '2022' },
-    { title: 'Google Africa Development Scholarship (Mobile Web)', issuer: 'Google · Pluralsight', year: '2020' },
+    { title: 'Google Africa Development Scholarship — Mobile Web', issuer: 'Google · Pluralsight', year: '2020' },
     { title: 'Big Data Engineer Mastery Award', issuer: 'IBM', year: '2019' },
     { title: 'BSc Mathematics & Computer Science', issuer: 'Machakos University', year: '2020' },
   ],
+
+  contact: {
+    tag: 'Open to architecture challenges',
+    headlineHtml: "Let's design something<br>that doesn't fall over.",
+    blurb:
+      "Consulting on system design, architecture reviews, or senior engineering roles — I'm one message away.",
+    links: [
+      { label: 'LinkedIn', url: 'https://www.linkedin.com/in/outhan-chazima/' },
+      { label: 'GitHub', url: 'https://github.com/outhanchazima' },
+      { label: 'Medium', url: 'https://medium.com/@outhan254' },
+    ],
+  },
 };

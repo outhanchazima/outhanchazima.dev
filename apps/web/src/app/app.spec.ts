@@ -15,11 +15,11 @@ describe('App', () => {
     expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('should render the name in the hero heading', async () => {
+  it('should render the hero headline', async () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Outhan Chazima');
+    expect(compiled.querySelector('h1')?.textContent).toContain('design systems');
   });
 });

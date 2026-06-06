@@ -1,1 +1,1231 @@
-/* You can add global styles to this file, and also import other style files */
+/* ==============================================================
+   DESIGN SYSTEM — "Blueprint" theme
+   The whole site reads like an architecture diagram: a drafting-grid
+   sheet, an amber "signal" accent, cyan data-flow, dashed connector
+   lines and node-style cards.
+
+   Light is the default (:root) — a pale drafting-paper sheet.
+   `.dark` on <html> flips to the deep blueprint-navy variant.
+   The palette is fully driven by CSS variables, so one class swaps
+   the entire theme.
+   ============================================================== */
+
+:root {
+  /* ---- Light "drafting paper" (default) ---- */
+  --ink: #eef2f9; /* page background — pale blueprint paper */
+  --ink-2: #ffffff; /* raised surfaces                       */
+  --ink-3: #e6ecf7; /* hover / fills                         */
+  --line: #c5d0e6; /* grid + hairlines                      */
+  --line-soft: #dbe2f0;
+  --paper: #0b1226; /* primary text — deep navy ink          */
+  --muted: #54618a; /* secondary text                        */
+  --signal: #b4690a; /* amber accent (darkened for contrast)  */
+  --signal-dim: #8a6a2a;
+  --cyan: #0e807b; /* data-flow teal (darkened)             */
+  --on-signal: #0b1020; /* text on amber fills                   */
+  --vignette: rgba(214, 223, 240, 0.85);
+  --glow-amber: rgba(180, 105, 10, 0.18);
+  --glow-cyan: rgba(14, 128, 123, 0.16);
+  --grid-opacity: 0.6;
+
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --serif: 'Fraunces', Georgia, serif;
+  --maxw: 1180px;
+  --radius: 6px;
+
+  /* cursor-parallax offsets for the blueprint grid (updated in JS) */
+  --gx: 0px;
+  --gy: 0px;
+}
+
+.dark {
+  /* ---- Deep blueprint navy ---- */
+  --ink: #0b1020;
+  --ink-2: #0f1730;
+  --ink-3: #16203f;
+  --line: #243156;
+  --line-soft: #1a2546;
+  --paper: #e9edf7;
+  --muted: #8b97b8;
+  --signal: #ffb224;
+  --signal-dim: #b87f1a;
+  --cyan: #5fd4d0;
+  --on-signal: #0b1020;
+  --vignette: rgba(7, 10, 22, 0.9);
+  --glow-amber: rgba(255, 178, 36, 0.22);
+  --glow-cyan: rgba(95, 212, 208, 0.15);
+  --grid-opacity: 0.5;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+::selection {
+  background: var(--signal);
+  color: var(--on-signal);
+}
+
+body {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 15px;
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Drafting-grid backdrop: two layered grids + radial vignette, fixed
+   behind everything so content scrolls "over" the blueprint sheet. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-image:
+    linear-gradient(var(--line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-soft) 1px, transparent 1px),
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 28px 28px, 28px 28px, 140px 140px, 140px 140px;
+  /* Coarse grid shifts further than the fine grid for a parallax/depth feel. */
+  background-position:
+    var(--gx) var(--gy),
+    var(--gx) var(--gy),
+    calc(var(--gx) * 1.9) calc(var(--gy) * 1.9),
+    calc(var(--gx) * 1.9) calc(var(--gy) * 1.9);
+  opacity: var(--grid-opacity);
+  transition: background-position 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: background-position;
+}
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(ellipse 90% 70% at 50% 0%, transparent 30%, var(--vignette) 100%);
+  pointer-events: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* skip link for keyboard / screen-reader users */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 200;
+}
+.skip-link:focus {
+  left: 16px;
+  top: 16px;
+  background: var(--signal);
+  color: var(--on-signal);
+  padding: 10px 16px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+
+/* ---------- mono "schematic" labels used everywhere ---------- */
+.tag {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--signal);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.tag::before {
+  content: '';
+  width: 26px;
+  height: 1px;
+  background: var(--signal);
+}
+
+/* ============================ NAV ============================ */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--ink) 82%, transparent);
+  backdrop-filter: blur(12px);
+}
+.nav-inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.logo {
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+.logo .dot {
+  width: 8px;
+  height: 8px;
+  background: var(--signal);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--signal);
+  animation: pulse 2.4s infinite;
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.nav-links {
+  display: flex;
+  gap: 26px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+.nav-links a {
+  color: var(--muted);
+  transition: color 0.2s;
+  position: relative;
+}
+.nav-links a:hover {
+  color: var(--signal);
+}
+.nav-links a span {
+  color: var(--signal-dim);
+  margin-right: 4px;
+}
+/* scroll-spy active state */
+.nav-links a.active {
+  color: var(--signal);
+}
+.nav-links a.active span {
+  color: var(--signal);
+}
+
+/* scroll-progress line along the bottom edge of the nav */
+.nav-progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  width: 0;
+  background: var(--signal);
+  box-shadow: 0 0 10px var(--signal);
+  transition: width 0.12s linear;
+}
+
+/* theme toggle — mono, drafting-style square button */
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: 0.25s;
+}
+.toggle:hover {
+  color: var(--signal);
+}
+
+/* ============================ HERO =========================== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 120px 0 60px;
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 48px;
+  align-items: center;
+}
+h1 {
+  font-family: var(--serif);
+  font-weight: 560;
+  font-size: clamp(44px, 6.4vw, 84px);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  margin: 22px 0 10px;
+}
+h1 em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--signal);
+}
+.hero-sub {
+  color: var(--muted);
+  max-width: 52ch;
+  margin: 18px 0 34px;
+  font-size: 14.5px;
+}
+.hero-sub b {
+  color: var(--paper);
+  font-weight: 500;
+}
+.hero-meta {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  padding-top: 20px;
+  margin-top: 8px;
+}
+.hero-meta div b {
+  display: block;
+  color: var(--paper);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+
+.btn-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.btn {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 14px 26px;
+  color: var(--signal);
+  position: relative;
+  transition: 0.25s;
+  cursor: pointer;
+  background: var(--ink-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn.primary {
+  background: var(--signal);
+  color: var(--on-signal);
+  font-weight: 600;
+}
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px var(--glow-amber);
+}
+.btn.ghost {
+  color: var(--muted);
+}
+.btn.ghost:hover {
+  color: var(--cyan);
+  box-shadow: 0 8px 28px var(--glow-cyan);
+}
+
+/* Animated system diagram (SVG) on the right of the hero */
+.diagram {
+  position: relative;
+}
+.diagram svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.flow {
+  stroke-dasharray: 6 6;
+  animation: flow 1.4s linear infinite;
+}
+@keyframes flow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+.node-pulse {
+  animation: nodepulse 3s ease-in-out infinite;
+}
+@keyframes nodepulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+/* diagram elements use theme variables so they adapt to light/dark */
+.dg-box {
+  fill: var(--ink-2);
+  stroke: var(--muted);
+}
+.dg-box-amber {
+  fill: var(--ink-2);
+  stroke: var(--signal);
+}
+.dg-box-cyan {
+  fill: var(--ink-2);
+  stroke: var(--cyan);
+}
+.dg-text {
+  fill: var(--paper);
+}
+.dg-text-amber {
+  fill: var(--signal);
+}
+.dg-flow-cyan {
+  stroke: var(--cyan);
+}
+.dg-flow-amber {
+  stroke: var(--signal);
+}
+.dg-mark {
+  stroke: var(--line);
+}
+/* drafting dimension lines + measurement labels on the diagram */
+.dg-dim line {
+  stroke: var(--muted);
+  stroke-width: 0.7;
+  opacity: 0.65;
+}
+.dg-dim circle {
+  fill: var(--muted);
+  opacity: 0.8;
+}
+.dg-dim-text {
+  fill: var(--muted);
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 1.5px;
+  opacity: 0.85;
+}
+.diagram .caption {
+  margin-top: 14px;
+  font-size: 10.5px;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* staggered page-load reveal (hero) */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+@keyframes rise {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.d1 {
+  animation-delay: 0.05s;
+}
+.d2 {
+  animation-delay: 0.18s;
+}
+.d3 {
+  animation-delay: 0.32s;
+}
+.d4 {
+  animation-delay: 0.46s;
+}
+.d5 {
+  animation-delay: 0.6s;
+}
+.d6 {
+  animation-delay: 0.78s;
+}
+
+/* ========================= SECTIONS ========================== */
+.section {
+  padding: 110px 0;
+  position: relative;
+}
+.sec-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 56px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+h2 {
+  font-family: var(--serif);
+  font-weight: 520;
+  font-size: clamp(30px, 3.6vw, 46px);
+  letter-spacing: -0.01em;
+  margin-top: 14px;
+}
+.sec-num {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  white-space: nowrap;
+}
+
+/* scroll-triggered reveal */
+.sr {
+  opacity: 0;
+  transform: translateY(34px);
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.sr.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ====================== EXPERTISE NODES ====================== */
+.nodes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.node {
+  background: var(--ink-2);
+  padding: 34px 28px;
+  position: relative;
+  transition: 0.3s;
+}
+.node:hover {
+  background: var(--ink-3);
+}
+.node:hover .node-id {
+  color: var(--signal);
+}
+.node-id {
+  font-size: 10.5px;
+  color: var(--muted);
+  letter-spacing: 0.16em;
+  transition: 0.3s;
+}
+.node h3 {
+  font-family: var(--serif);
+  font-weight: 540;
+  font-size: 21px;
+  margin: 14px 0 12px;
+  letter-spacing: -0.01em;
+}
+.node p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+/* ======================= EXPERIENCE ========================== */
+.pipeline {
+  position: relative;
+  padding-left: 46px;
+}
+.pipeline::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: repeating-linear-gradient(var(--line) 0 6px, transparent 6px 12px);
+}
+.job {
+  position: relative;
+  padding: 0 0 64px;
+}
+.job:last-child {
+  padding-bottom: 0;
+}
+.job::before {
+  content: '';
+  position: absolute;
+  left: -44px;
+  top: 6px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  border: 1px solid var(--signal);
+  background: var(--ink);
+}
+.job::after {
+  content: '';
+  position: absolute;
+  left: -38px;
+  top: 12px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--signal);
+  box-shadow: 0 0 10px var(--signal);
+}
+.job-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+.job h3 {
+  font-family: var(--serif);
+  font-size: 25px;
+  font-weight: 540;
+  letter-spacing: -0.01em;
+}
+.job .co {
+  color: var(--cyan);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  margin-top: 4px;
+}
+.job .when {
+  font-size: 11.5px;
+  color: var(--muted);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.job p {
+  color: var(--muted);
+  font-size: 13.5px;
+  max-width: 68ch;
+  margin-top: 14px;
+}
+.job ul {
+  list-style: none;
+  margin-top: 14px;
+  display: grid;
+  gap: 8px;
+}
+.job li {
+  font-size: 13px;
+  color: var(--muted);
+  padding-left: 22px;
+  position: relative;
+}
+.job li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--signal);
+}
+.chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.chip {
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  padding: 5px 12px;
+  background: var(--ink-3);
+  color: var(--muted);
+  transition: 0.25s;
+}
+.chip:hover {
+  color: var(--signal);
+}
+
+/* ======================== PRINCIPLES ========================= */
+.princ {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 54px 70px;
+}
+.p-item {
+  display: flex;
+  gap: 22px;
+}
+.p-item .num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 38px;
+  color: var(--signal);
+  line-height: 1;
+  min-width: 54px;
+  font-weight: 400;
+}
+.p-item h3 {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 540;
+  margin-bottom: 8px;
+}
+.p-item p {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ========================= WRITING =========================== */
+.posts {
+  display: grid;
+  gap: 10px;
+}
+.post {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  gap: 26px;
+  align-items: center;
+  background: var(--ink-2);
+  padding: 26px 30px;
+  transition: 0.3s;
+}
+.post:hover {
+  background: var(--ink-3);
+  padding-left: 38px;
+}
+.post .pn {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.16em;
+}
+.post h3 {
+  font-family: var(--serif);
+  font-size: 19px;
+  font-weight: 520;
+}
+.post .arr {
+  color: var(--signal);
+  font-size: 18px;
+  transition: 0.3s;
+}
+.post:hover .arr {
+  transform: translateX(6px);
+}
+.post small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 4px;
+  font-family: var(--mono);
+}
+
+/* ========================= CONTACT =========================== */
+.contact-box {
+  background: var(--ink-2);
+  padding: 70px 60px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.contact-box::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, var(--glow-amber), transparent 60%);
+}
+.contact-box > * {
+  position: relative;
+}
+.contact-box h2 {
+  margin: 16px 0 14px;
+}
+.contact-box p {
+  color: var(--muted);
+  max-width: 46ch;
+  margin: 0 auto 36px;
+  font-size: 13.5px;
+}
+.links {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.footer {
+  padding: 30px 0;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+}
+.foot-inner {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* ticker of technologies between sections */
+.ticker {
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 16px 0;
+  background: var(--ink-2);
+}
+.ticker-inner {
+  display: inline-block;
+  animation: scroll 30s linear infinite;
+}
+.ticker span {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 34px;
+}
+.ticker span i {
+  color: var(--signal);
+  font-style: normal;
+  margin-right: 10px;
+}
+@keyframes scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ======================== RESPONSIVE ========================= */
+@media (max-width: 920px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+  .diagram {
+    max-width: 520px;
+  }
+  .nodes {
+    grid-template-columns: 1fr 1fr;
+  }
+  .princ {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .nav-links {
+    display: none;
+  }
+  .nodes {
+    grid-template-columns: 1fr;
+  }
+  .post {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .post .arr {
+    display: none;
+  }
+  .contact-box {
+    padding: 50px 26px;
+  }
+  .wrap {
+    padding: 0 20px;
+  }
+}
+
+/* Respect reduced-motion: disable looping/scroll animations. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal,
+  .sr {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+}
+
+/* ===================== METRICS (stats) ======================= */
+.metrics {
+  background: var(--ink-2);
+}
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.metric {
+  padding: 34px 24px;
+  position: relative;
+}
+.metric .v {
+  font-family: var(--serif);
+  font-size: 40px;
+  font-weight: 560;
+  color: var(--signal);
+  line-height: 1;
+}
+.metric .l {
+  font-size: 12px;
+  color: var(--paper);
+  margin-top: 12px;
+  letter-spacing: 0.04em;
+}
+.metric .d {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+/* ======================== STACK (skills) ===================== */
+.stack {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.stack-card {
+  background: var(--ink-2);
+  padding: 30px 28px;
+  transition: 0.3s;
+}
+.stack-card:hover {
+  background: var(--ink-3);
+}
+.stack-card:hover .stack-id {
+  color: var(--signal);
+}
+.stack-id {
+  font-size: 10.5px;
+  color: var(--muted);
+  letter-spacing: 0.16em;
+  transition: 0.3s;
+}
+.stack-card h3 {
+  font-family: var(--serif);
+  font-weight: 540;
+  font-size: 19px;
+  margin: 12px 0 16px;
+  letter-spacing: -0.01em;
+}
+
+/* ===================== WORK (projects) ======================= */
+.work {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.work-card {
+  background: var(--ink-2);
+  padding: 32px 30px;
+  display: flex;
+  flex-direction: column;
+  transition: 0.3s;
+  position: relative;
+}
+.work-card:hover {
+  background: var(--ink-3);
+}
+.work-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 14px;
+}
+.work-tag {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--signal);
+  background: color-mix(in srgb, var(--signal) 14%, transparent);
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+.work-card h3 {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 540;
+  letter-spacing: -0.01em;
+}
+.work-ctx {
+  color: var(--cyan);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  margin-top: 4px;
+}
+.work-card p {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 12px;
+  flex: 1;
+}
+.work-impact {
+  list-style: none;
+  margin-top: 16px;
+  display: grid;
+  gap: 7px;
+}
+.work-impact li {
+  font-size: 12.5px;
+  color: var(--paper);
+  padding-left: 20px;
+  position: relative;
+}
+.work-impact li::before {
+  content: '◆';
+  position: absolute;
+  left: 0;
+  top: 2px;
+  color: var(--signal);
+  font-size: 9px;
+}
+.work-card .chips {
+  padding-top: 16px;
+}
+.work-ext {
+  color: var(--muted);
+  transition: 0.25s;
+  display: inline-flex;
+}
+.work-ext:hover {
+  color: var(--signal);
+}
+
+/* toggle button (e.g. show all / featured) */
+.toggle-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 9px 16px;
+  color: var(--muted);
+  background: var(--ink-3);
+  cursor: pointer;
+  transition: 0.25s;
+}
+.toggle-btn:hover {
+  color: var(--signal);
+}
+
+/* ================== CREDENTIALS (certs) ===================== */
+.creds {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.cred {
+  background: var(--ink-2);
+  padding: 24px 26px;
+  display: flex;
+  gap: 18px;
+  align-items: baseline;
+  transition: 0.3s;
+}
+.cred:hover {
+  background: var(--ink-3);
+}
+.cred .yr {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--signal);
+  min-width: 54px;
+}
+.cred h3 {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--paper);
+  letter-spacing: 0.02em;
+}
+.cred small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+/* ============= INSTRUMENT CHROME (frame + HUD) ============== */
+/* Fixed corner registration marks — like a drafting sheet / viewfinder. */
+.frame {
+  display: none;
+}
+.fc {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  opacity: 0.6;
+}
+.fc.tl {
+  top: 0;
+  left: 0;
+  border-top: 1px solid var(--signal);
+  border-left: 1px solid var(--signal);
+}
+.fc.tr {
+  top: 0;
+  right: 0;
+  border-top: 1px solid var(--signal);
+  border-right: 1px solid var(--signal);
+}
+.fc.bl {
+  bottom: 0;
+  left: 0;
+  border-bottom: 1px solid var(--signal);
+  border-left: 1px solid var(--signal);
+}
+.fc.br {
+  bottom: 0;
+  right: 0;
+  border-bottom: 1px solid var(--signal);
+  border-right: 1px solid var(--signal);
+}
+
+/* Live HUD readout: current section + scroll progress. */
+.hud {
+  position: fixed;
+  right: 20px;
+  bottom: 18px;
+  z-index: 95;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--ink) 80%, transparent);
+  padding: 8px 14px;
+  backdrop-filter: blur(8px);
+}
+.hud-loc {
+  color: var(--signal);
+}
+.hud-bar {
+  position: relative;
+  width: 64px;
+  height: 3px;
+  background: var(--line);
+}
+.hud-bar i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: block;
+  background: var(--signal);
+  box-shadow: 0 0 8px var(--signal);
+}
+
+/* =================== BOOT SEQUENCE OVERLAY ================== */
+.boot {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.36s ease;
+}
+.boot--out {
+  opacity: 0;
+}
+.boot-inner {
+  width: min(560px, 88vw);
+  padding: 0 8px;
+}
+.boot-head {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: var(--signal);
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+}
+.boot-line {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 2.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.boot-line .bp {
+  color: var(--signal);
+  margin-right: 8px;
+}
+.boot-line .bs {
+  color: var(--cyan);
+  margin-left: 8px;
+}
+.boot-line .bc {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  margin-left: 6px;
+  background: var(--signal);
+  vertical-align: -2px;
+  animation: blink 0.9s steps(1) infinite;
+}
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
+}
+.boot-skip {
+  margin-top: 26px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--signal-dim);
+}
+
+@media (max-width: 920px) {
+  .stack {
+    grid-template-columns: 1fr 1fr;
+  }
+  .work {
+    grid-template-columns: 1fr;
+  }
+  .creds {
+    grid-template-columns: 1fr;
+  }
+  .hud,
+  .frame {
+    display: none;
+  }
+}
+@media (max-width: 640px) {
+  .metrics-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .stack {
+    grid-template-columns: 1fr;
+  }
+}

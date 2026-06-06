@@ -11,7 +11,8 @@ Server-side rendered for SEO, served on **Bun**, deployed to a private Linux ser
 | Layer        | Choice                                                            |
 | ------------ | ----------------------------------------------------------------- |
 | Framework    | Angular 22 (standalone components, signals, SSR + prerender)      |
-| Styling      | TailwindCSS v4 (CSS-variable theming, class-based dark mode)       |
+| Design       | Bespoke "blueprint" system — Fraunces + IBM Plex Mono, drafting grid |
+| Styling      | CSS-variable theming (`styles.scss`) + TailwindCSS v4 available    |
 | Language     | TypeScript (strict)                                               |
 | Runtime      | Bun (build **and** production server)                             |
 | Monorepo     | Bun workspaces                                                    |
@@ -31,7 +32,8 @@ outhanchazima.dev/
 │       │   │   └── shared/      # icon component, reveal directive
 │       │   ├── server.ts        # Bun/Express SSR entry (+ /healthz)
 │       │   ├── index.html       # base SEO + no-flash theme bootstrap
-│       │   └── tailwind.css     # design tokens & theming
+│       │   ├── styles.scss      # the "blueprint" design system + theming
+│       │   └── tailwind.css     # Tailwind entry (utilities + dark variant)
 │       ├── public/              # favicon, og-image, manifest, robots, sitemap, résumé
 │       └── tools/               # build-time asset generation (OG image, icons)
 ├── deploy/
@@ -77,11 +79,17 @@ re-renders. To refresh the downloadable résumé, replace
 
 ## Theming
 
-Light is the default. A class-based dark mode is toggled via the navbar switch,
-persisted to `localStorage`, and applied before first paint by a tiny inline
-script in `index.html` (no flash of the wrong theme). All colors are driven by
-CSS variables in `tailwind.css`, so the entire palette flips with one `.dark`
-class on `<html>`.
+The site uses a "blueprint" visual language — a drafting-grid sheet, an amber
+"signal" accent, cyan data-flow, dashed connectors and node-style cards
+(`src/styles.scss`).
+
+- **Light** is the default: a pale drafting-paper sheet.
+- **Dark** is the deep blueprint-navy variant, toggled via the navbar switch.
+
+The theme is persisted to `localStorage` and applied before first paint by a
+tiny inline script in `index.html` (no flash of the wrong theme). The whole
+palette is driven by CSS variables, so one `.dark` class on `<html>` flips
+everything.
 
 ## SEO & "good-to-haves"
 

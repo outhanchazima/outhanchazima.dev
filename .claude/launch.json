@@ -10,6 +10,15 @@
         "PORT": "4321",
         "NG_ALLOWED_HOSTS": "localhost,127.0.0.1"
       }
+    },
+    {
+      "name": "portfolio-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start", "--prefix", "apps/web", "--", "--port", "4288"],
+      "port": 4288,
+      "env": {
+        "PORT": "4288"
+      }
     }
   ]
 }

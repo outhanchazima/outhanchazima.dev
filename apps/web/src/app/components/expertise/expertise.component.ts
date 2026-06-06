@@ -1,0 +1,31 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { PORTFOLIO } from '../../core/data/portfolio.data';
+import { RevealDirective } from '../../shared/reveal.directive';
+
+@Component({
+  selector: 'app-expertise',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RevealDirective],
+  template: `
+    <section id="expertise" class="section">
+      <div class="wrap">
+        <div class="sec-head" appReveal>
+          <div><span class="tag">What I do</span><h2>Core expertise</h2></div>
+          <span class="sec-num">SEC.01 / SYSTEMS</span>
+        </div>
+        <div class="nodes">
+          @for (node of nodes; track node.id) {
+            <div class="node" appReveal>
+              <span class="node-id">{{ node.id }}</span>
+              <h3>{{ node.title }}</h3>
+              <p>{{ node.description }}</p>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+  `,
+})
+export class ExpertiseComponent {
+  protected readonly nodes = PORTFOLIO.expertise;
+}

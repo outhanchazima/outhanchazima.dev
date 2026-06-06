@@ -1,11 +1,18 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { HudComponent } from './components/hud/hud.component';
+import { BootComponent } from './components/boot/boot.component';
+import { ViewportService } from './core/services/viewport.service';
 import { HeroComponent } from './components/hero/hero.component';
+import { TickerComponent } from './components/ticker/ticker.component';
 import { StatsComponent } from './components/stats/stats.component';
-import { AboutComponent } from './components/about/about.component';
+import { ExpertiseComponent } from './components/expertise/expertise.component';
 import { SkillsComponent } from './components/skills/skills.component';
-import { ExperienceComponent } from './components/experience/experience.component';
 import { ProjectsComponent } from './components/projects/projects.component';
+import { ExperienceComponent } from './components/experience/experience.component';
+import { PrinciplesComponent } from './components/principles/principles.component';
+import { WritingComponent } from './components/writing/writing.component';
+import { CertificationsComponent } from './components/certifications/certifications.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { SeoService } from './core/services/seo.service';
@@ -17,45 +24,59 @@ const SITE_URL = 'https://outhanchazima.dev/';
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    BootComponent,
     NavbarComponent,
+    HudComponent,
     HeroComponent,
-    StatsComponent,
-    AboutComponent,
+    TickerComponent,
+    // StatsComponent,
+    ExpertiseComponent,
     SkillsComponent,
-    ExperienceComponent,
     ProjectsComponent,
+    ExperienceComponent,
+    PrinciplesComponent,
+    WritingComponent,
+    CertificationsComponent,
     ContactComponent,
     FooterComponent,
   ],
   template: `
-    <a
-      href="#main"
-      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
-      >Skip to content</a
-    >
+    <app-boot />
+    <a href="#main" class="skip-link">Skip to content</a>
     <app-navbar />
+    <app-hud />
     <main id="main">
       <app-hero />
-      <app-stats />
-      <app-about />
+      <app-ticker />
+      <!-- <app-stats /> -->
+      <app-expertise />
       <app-skills />
-      <app-experience />
       <app-projects />
+      <app-experience />
+      <app-principles />
+      <app-writing />
+      <app-certifications />
       <app-contact />
     </main>
     <app-footer />
   `,
 })
-export class App implements OnInit {
+export class App implements OnInit, AfterViewInit {
   private readonly seo = inject(SeoService);
+  private readonly viewport = inject(ViewportService);
+
+  ngAfterViewInit(): void {
+    // All sections are now in the DOM — wire up scroll-spy + progress.
+    this.viewport.init();
+  }
 
   ngOnInit(): void {
     const { profile } = PORTFOLIO;
     const description =
-      'Outhan Chazima — senior software engineer specialising in system design, architecture and scalable production systems. Builder of payment, USSD and real-time analytics platforms.';
+      'Outhan Chazima — senior software engineer specialising in system design & architecture. Resilient, distributed, well-documented systems, payment rails and event-driven platforms. Nairobi, Kenya.';
 
     this.seo.apply({
-      title: `${profile.name} — ${profile.role}`,
+      title: 'Outhan Chazima — Systems Architect',
       description,
       url: SITE_URL,
       image: `${SITE_URL}og-image.png`,
@@ -65,25 +86,23 @@ export class App implements OnInit {
       '@context': 'https://schema.org',
       '@type': 'Person',
       name: profile.name,
-      jobTitle: profile.role,
+      jobTitle: 'Senior Software Engineer — System Design & Architecture',
       description,
       url: SITE_URL,
-      email: `mailto:${profile.email}`,
-      telephone: profile.phone,
       address: { '@type': 'PostalAddress', addressLocality: 'Nairobi', addressCountry: 'KE' },
       knowsAbout: [
         'System Design',
         'Software Architecture',
         'Distributed Systems',
         'Microservices',
+        'Event-Driven Architecture',
+        'Payments & Fintech',
         'Kafka',
-        'Django',
-        'NestJS',
-        'Angular',
+        'PostgreSQL',
         'Docker',
         'Kubernetes',
       ],
-      sameAs: profile.socials.filter((s) => s.icon !== 'email').map((s) => s.url),
+      sameAs: profile.socials.map((s) => s.url),
     });
   }
 }
