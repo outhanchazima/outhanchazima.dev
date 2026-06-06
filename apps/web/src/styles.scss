@@ -23,6 +23,7 @@
   --signal-dim: #8a6a2a;
   --cyan: #0e807b; /* data-flow teal (darkened)             */
   --on-signal: #0b1020; /* text on amber fills                   */
+  --danger: #c0392b; /* form validation errors                */
   --vignette: rgba(214, 223, 240, 0.85);
   --glow-amber: rgba(180, 105, 10, 0.18);
   --glow-cyan: rgba(14, 128, 123, 0.16);
@@ -51,6 +52,7 @@
   --signal-dim: #b87f1a;
   --cyan: #5fd4d0;
   --on-signal: #0b1020;
+  --danger: #ff6b5e;
   --vignette: rgba(7, 10, 22, 0.9);
   --glow-amber: rgba(255, 178, 36, 0.22);
   --glow-cyan: rgba(95, 212, 208, 0.15);
@@ -1204,6 +1206,32 @@ h2.echo::before {
   transform: none;
   box-shadow: none;
 }
+/* Send message / Book a meeting tab switcher */
+.contact-tabs {
+  display: inline-flex;
+  gap: 6px;
+  margin: 30px 0 6px;
+}
+.contact-tab {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 10px 18px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: 0.2s;
+}
+.contact-tab:hover {
+  color: var(--paper);
+}
+.contact-tab.active {
+  color: var(--signal);
+  border-bottom-color: var(--signal);
+}
 .contact-form {
   display: grid;
   gap: 14px;
@@ -1250,7 +1278,64 @@ h2.echo::before {
 }
 .contact-form input[aria-invalid='true'],
 .contact-form textarea[aria-invalid='true'] {
-  box-shadow: inset 0 0 0 1px #d4674a;
+  box-shadow: inset 0 0 0 1px var(--danger);
+}
+.cf-error {
+  font-size: 11.5px;
+  color: var(--danger);
+}
+.cf-label {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+/* topic selector pills */
+.cf-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.topic-pill {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink-3);
+  color: var(--muted);
+  cursor: pointer;
+  transition: 0.2s;
+}
+.topic-pill:hover {
+  color: var(--paper);
+}
+.topic-pill.active {
+  background: var(--signal);
+  color: var(--on-signal);
+  font-weight: 600;
+}
+/* consent row */
+.cf-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  cursor: pointer;
+}
+.cf-consent input {
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--signal);
+  flex-shrink: 0;
+}
+.cf-submit {
+  width: 100%;
+  justify-content: center;
+  margin-top: 2px;
 }
 /* honeypot — visually hidden, off the tab order */
 .cf-hp {
@@ -1286,9 +1371,27 @@ h2.echo::before {
 .contact-links a:hover {
   color: var(--signal);
 }
+
+/* inline Cal.com booking embed */
+.cal-embed-wrap {
+  max-width: 900px;
+  margin: 24px auto 0;
+  text-align: left;
+}
+.cal-embed {
+  width: 100%;
+  min-height: 620px;
+}
+.cal-embed iframe {
+  width: 100% !important;
+  border: 0;
+}
 @media (max-width: 560px) {
   .cf-row {
     grid-template-columns: 1fr;
+  }
+  .cal-embed {
+    min-height: 560px;
   }
 }
 
