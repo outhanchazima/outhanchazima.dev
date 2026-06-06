@@ -7,7 +7,12 @@
 # Stage 2 ships only the self-contained `dist/` output + Bun runtime.
 
 # ---------- Builder ----------
-FROM oven/bun:1 AS builder
+# The Angular CLI requires a recent Node.js (>= v24.15). The `oven/bun:1` image
+# bundles an older Node, so we build on a Node base image and bring the Bun
+# binary along for fast, lockfile-pinned installs.
+FROM oven/bun:1 AS bun
+FROM node:24-bookworm-slim AS builder
+COPY --from=bun /usr/local/bin/bun /usr/local/bin/bun
 WORKDIR /app
 
 # Install dependencies first for better layer caching.
