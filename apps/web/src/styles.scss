@@ -270,11 +270,105 @@ a {
   position: relative;
   padding: 120px 0 60px;
 }
+/* ambient animated torus backdrop */
+.hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.75;
+}
+.dark .hero-canvas {
+  opacity: 0.85;
+}
 .hero-grid {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
   gap: 48px;
   align-items: center;
+}
+
+/* vertical social rail, bottom-left of the hero */
+.hero-social {
+  position: absolute;
+  left: 34px;
+  bottom: 40px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.hero-social::before {
+  content: '';
+  width: 1px;
+  height: 46px;
+  margin: 0 auto 6px;
+  background: var(--line);
+}
+.hero-social a {
+  color: var(--muted);
+  display: inline-flex;
+  transition: color 0.25s, transform 0.25s;
+}
+.hero-social a:hover {
+  color: var(--signal);
+  transform: translateY(-2px);
+}
+
+/* animated scroll-down cue */
+.hero-scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 38px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  transition: color 0.25s;
+}
+.hero-scroll:hover {
+  color: var(--signal);
+}
+.hero-scroll-line {
+  width: 1px;
+  height: 54px;
+  background: linear-gradient(var(--signal), transparent);
+  opacity: 0.7;
+}
+.hero-scroll-arrow {
+  font-size: 13px;
+  animation: scroll-bob 1.8s ease-in-out infinite;
+}
+@keyframes scroll-bob {
+  0%,
+  100% {
+    transform: translateY(-3px);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(3px);
+    opacity: 1;
+  }
+}
+@media (max-width: 920px) {
+  .hero-social,
+  .hero-scroll {
+    display: none;
+  }
+  .hero-canvas {
+    opacity: 0.5;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll-arrow {
+    animation: none;
+  }
 }
 h1 {
   font-family: var(--serif);
@@ -488,6 +582,22 @@ h2 {
   font-size: clamp(30px, 3.6vw, 46px);
   letter-spacing: -0.01em;
   margin-top: 14px;
+}
+/* faded "echo" of a heading sitting behind it (see EchoTitleDirective) */
+h2.echo {
+  position: relative;
+}
+h2.echo::before {
+  content: attr(data-echo);
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  z-index: -1;
+  color: var(--paper);
+  opacity: 0.07;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
 }
 .sec-num {
   font-size: 12px;

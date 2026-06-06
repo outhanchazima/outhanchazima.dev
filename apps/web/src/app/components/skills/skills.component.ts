@@ -14,6 +14,7 @@ import {
 import { isPlatformBrowser } from '@angular/common';
 import { PORTFOLIO } from '../../core/data/portfolio.data';
 import { RevealDirective } from '../../shared/reveal.directive';
+import { EchoTitleDirective } from '../../shared/echo-title.directive';
 
 type Cat = 'ai' | 'lang' | 'tool';
 
@@ -50,12 +51,12 @@ const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
 @Component({
   selector: 'app-skills',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RevealDirective],
+  imports: [RevealDirective, EchoTitleDirective],
   template: `
     <section id="skills" class="section">
       <div class="wrap">
         <div class="sec-head" appReveal>
-          <div><span class="tag">Tools of the trade</span><h2>Stack</h2></div>
+          <div><span class="tag">Tools of the trade</span><h2 echo>Stack</h2></div>
           <span class="sec-num">SEC.02 / STACK</span>
         </div>
 

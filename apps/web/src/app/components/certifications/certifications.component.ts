@@ -1,16 +1,17 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { PORTFOLIO } from '../../core/data/portfolio.data';
 import { RevealDirective } from '../../shared/reveal.directive';
+import { EchoTitleDirective } from '../../shared/echo-title.directive';
 
 @Component({
   selector: 'app-certifications',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RevealDirective],
+  imports: [RevealDirective, EchoTitleDirective],
   template: `
     <section id="credentials" class="section">
       <div class="wrap">
         <div class="sec-head" appReveal>
-          <div><span class="tag">Recognition</span><h2>Certifications &amp; awards</h2></div>
+          <div><span class="tag">Recognition</span><h2 echo>Certifications &amp; awards</h2></div>
           <span class="sec-num">SEC.07 / CREDENTIALS</span>
         </div>
         <div class="creds">

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PORTFOLIO } from '../../core/data/portfolio.data';
 import { RevealDirective } from '../../shared/reveal.directive';
+import { EchoTitleDirective } from '../../shared/echo-title.directive';
 import { MediumService, MediumPost } from '../../core/services/medium.service';
 
 interface Post {
@@ -14,12 +15,12 @@ interface Post {
 @Component({
   selector: 'app-writing',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RevealDirective],
+  imports: [RevealDirective, EchoTitleDirective],
   template: `
     <section id="writing" class="section">
       <div class="wrap">
         <div class="sec-head" appReveal>
-          <div><span class="tag">Knowledge sharing</span><h2>Writing &amp; notes</h2></div>
+          <div><span class="tag">Knowledge sharing</span><h2 echo>Writing &amp; notes</h2></div>
           <span class="sec-num">SEC.04 / OUTPUT</span>
         </div>
         <div class="posts">
