@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Outhan Chazima — Senior Software Engineer</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta
+      name="description"
+      content="Outhan Chazima is a senior software engineer specialising in system design, architecture, and scalable production systems — Kafka, Django, NestJS, Angular, Docker & Kubernetes."
+    />
+    <meta name="author" content="Outhan Chazima" />
+    <meta name="theme-color" content="#0d9488" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#060a14" media="(prefers-color-scheme: dark)" />
+
+    <link rel="canonical" href="https://outhanchazima.dev/" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="manifest" href="site.webmanifest" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Outhan Chazima" />
+    <meta property="og:title" content="Outhan Chazima — Senior Software Engineer" />
+    <meta
+      property="og:description"
+      content="Specialising in system design, architecture & scalable production systems. Builder of payment, USSD and real-time analytics platforms processing millions in transactions."
+    />
+    <meta property="og:url" content="https://outhanchazima.dev/" />
+    <meta property="og:image" content="https://outhanchazima.dev/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Outhan Chazima — Senior Software Engineer" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Outhan Chazima — Senior Software Engineer" />
+    <meta
+      name="twitter:description"
+      content="Specialising in system design, architecture & scalable production systems."
+    />
+    <meta name="twitter:image" content="https://outhanchazima.dev/og-image.png" />
+
+    <!-- Fonts: preconnect + non-blocking load -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+
+    <!--
+      No-flash theme bootstrap. Runs before first paint so the correct theme
+      class is on <html> immediately. Light is the default; we only switch to
+      dark when the visitor has explicitly chosen it before.
+    -->
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>

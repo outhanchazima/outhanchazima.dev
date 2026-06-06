@@ -1,0 +1,24 @@
+# Dependencies & build output (rebuilt inside the image)
+node_modules
+**/node_modules
+apps/web/dist
+apps/web/.angular
+
+# Version control & editor
+.git
+.gitignore
+.vscode
+.idea
+.nx
+
+# Local env & secrets — never bake into the image
+**/.env
+**/.env.*
+deploy/cloudflared/*.json
+deploy/cloudflared/cert.pem
+
+# OS / misc
+.DS_Store
+*.log
+npm-debug.log*
+README.md

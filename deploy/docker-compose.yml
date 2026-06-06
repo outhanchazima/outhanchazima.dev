@@ -1,0 +1,67 @@
+# Production stack for outhanchazima.dev.
+#
+# Run from the repository root:
+#   docker compose -f deploy/docker-compose.yml --env-file deploy/.env up -d --build
+#
+# The `web` service is never published to the host — it is reachable only on the
+# internal Docker network. `cloudflared` establishes an outbound-only tunnel to
+# Cloudflare and routes outhanchazima.dev → http://web:4000. No inbound ports
+# need to be opened on the Linux server's firewall.
+
+name: outhanchazima-dev
+
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: outhanchazima-dev:latest
+    container_name: outhanchazima-web
+    restart: unless-stopped
+    environment:
+      PORT: 4000
+      NODE_ENV: production
+      NG_ALLOWED_HOSTS: ${NG_ALLOWED_HOSTS:-outhanchazima.dev,www.outhanchazima.dev}
+    expose:
+      - "4000"
+    networks:
+      - edge
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bun",
+          "--eval",
+          "fetch('http://127.0.0.1:4000/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # Cloudflare Tunnel (token-based / remotely-managed).
+  # Create the tunnel in the Zero Trust dashboard, map the public hostname
+  # outhanchazima.dev to the service http://web:4000, then put the token in
+  # deploy/.env as TUNNEL_TOKEN. See deploy/scripts/setup-tunnel.sh for the
+  # config-file (locally-managed) alternative.
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: outhanchazima-cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate --metrics 0.0.0.0:2000 run
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN:?Set TUNNEL_TOKEN in deploy/.env}
+    depends_on:
+      web:
+        condition: service_healthy
+    networks:
+      - edge
+    healthcheck:
+      test: ["CMD", "cloudflared", "--version"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+networks:
+  edge:
+    driver: bridge

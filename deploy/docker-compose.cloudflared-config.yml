@@ -1,0 +1,16 @@
+# Override for the locally-managed (config-file) Cloudflare Tunnel approach.
+# Apply on top of the base compose file:
+#
+#   docker compose -f deploy/docker-compose.yml \
+#                  -f deploy/docker-compose.cloudflared-config.yml up -d
+#
+# This swaps the token-based cloudflared for one driven by a mounted config.yml
+# and credentials JSON in deploy/cloudflared/.
+
+services:
+  cloudflared:
+    command: tunnel --no-autoupdate --config /etc/cloudflared/config.yml run
+    environment:
+      TUNNEL_TOKEN: ""
+    volumes:
+      - ./cloudflared:/etc/cloudflared:ro

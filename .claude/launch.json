@@ -1,0 +1,15 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "portfolio",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["apps/web/dist/web/server/server.mjs"],
+      "port": 4321,
+      "env": {
+        "PORT": "4321",
+        "NG_ALLOWED_HOSTS": "localhost,127.0.0.1"
+      }
+    }
+  ]
+}

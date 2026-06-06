@@ -1,0 +1,19 @@
+# Locally-managed Cloudflare Tunnel config (alternative to the token-based
+# setup in docker-compose.yml). Use this if you prefer to keep tunnel state on
+# the server rather than in the Cloudflare dashboard.
+#
+# 1. Run deploy/scripts/setup-tunnel.sh to create the tunnel + credentials.
+# 2. Copy this file to config.yml and replace <TUNNEL_ID> below.
+# 3. Start with the override compose file:
+#      docker compose -f deploy/docker-compose.yml \
+#                     -f deploy/docker-compose.cloudflared-config.yml up -d
+
+tunnel: <TUNNEL_ID>
+credentials-file: /etc/cloudflared/<TUNNEL_ID>.json
+
+ingress:
+  - hostname: outhanchazima.dev
+    service: http://web:4000
+  - hostname: www.outhanchazima.dev
+    service: http://web:4000
+  - service: http_status:404
