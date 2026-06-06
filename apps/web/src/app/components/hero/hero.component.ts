@@ -10,21 +10,12 @@ import {
 import { isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { PORTFOLIO } from '../../core/data/portfolio.data';
-import { IconComponent } from '../../shared/icon.component';
 
 @Component({
   selector: 'app-hero',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IconComponent],
   template: `
     <header id="top" class="hero">
-      <div class="hero-social" aria-label="Social links">
-        @for (s of socials; track s.url) {
-          <a [href]="s.url" target="_blank" rel="noopener noreferrer" [attr.aria-label]="s.label">
-            <app-icon [name]="iconFor(s.label)" [size]="18" />
-          </a>
-        }
-      </div>
       <a class="hero-scroll" href="#expertise" aria-label="Scroll to content">
         <span class="hero-scroll-line"></span>
         <span class="hero-scroll-arrow" aria-hidden="true">↓</span>
@@ -121,14 +112,6 @@ export class HeroComponent implements OnInit, OnDestroy {
   protected readonly tagline: SafeHtml = this.sanitizer.bypassSecurityTrustHtml(
     PORTFOLIO.profile.taglineHtml,
   );
-  protected readonly socials = PORTFOLIO.profile.socials;
-
-  protected iconFor(label: string): 'linkedin' | 'github' | 'external' {
-    const l = label.toLowerCase();
-    if (l.includes('linkedin')) return 'linkedin';
-    if (l.includes('github')) return 'github';
-    return 'external';
-  }
 
   /** Playful "uptime" clock in the diagram caption — browser-only. */
   protected readonly uptime = signal('UPTIME 00:00:00');
