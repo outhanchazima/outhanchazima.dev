@@ -898,20 +898,33 @@ h2 {
 
 /* ======================== STACK (skills) ===================== */
 .stack {
+  max-width: 940px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
+  gap: 6px;
 }
-.stack-card {
+.stack-row {
+  display: grid;
+  grid-template-columns: 248px 1fr;
+  gap: 18px 44px;
+  align-items: start;
+  padding: 24px 28px;
   background: var(--ink-2);
-  padding: 30px 28px;
   transition: 0.3s;
 }
-.stack-card:hover {
+.stack-row:hover {
   background: var(--ink-3);
 }
-.stack-card:hover .stack-id {
+.stack-row:hover .stack-id {
   color: var(--signal);
+}
+/* keep chips readable when the row fill shifts on hover */
+.stack-row:hover .chip {
+  background: var(--ink-2);
+}
+.stack-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
 }
 .stack-id {
   font-size: 10.5px;
@@ -919,13 +932,118 @@ h2 {
   letter-spacing: 0.16em;
   transition: 0.3s;
 }
-.stack-card h3 {
+.stack-meta h3 {
   font-family: var(--serif);
   font-weight: 540;
-  font-size: 19px;
-  margin: 12px 0 16px;
+  font-size: 20px;
   letter-spacing: -0.01em;
 }
+.stack .chips {
+  margin-top: 4px;
+}
+
+/* -------- interactive 3D skill globe (browser-only enhancement) -------- */
+.globe-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+.globe-stage {
+  position: relative;
+  width: 100%;
+  max-width: 540px;
+  height: 520px;
+  margin: 0 auto;
+  cursor: grab;
+  touch-action: pan-y;
+  perspective: 900px;
+}
+.globe-stage:active {
+  cursor: grabbing;
+}
+/* soft glowing core the tags appear to orbit */
+.globe-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 250px;
+  height: 250px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 42%, var(--glow-amber), transparent 66%),
+    radial-gradient(circle at 50% 60%, var(--glow-cyan), transparent 70%);
+  filter: blur(12px);
+  opacity: 0.6;
+  pointer-events: none;
+  animation: globe-pulse 6s ease-in-out infinite;
+}
+@keyframes globe-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: translate(-50%, -50%) scale(0.94);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1.06);
+  }
+}
+.globe-tag {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  margin: 0;
+  padding: 2px 4px;
+  border: 0;
+  background: none;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--muted);
+  cursor: pointer;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transform-origin: center;
+  transition: text-shadow 0.4s ease, filter 0.4s ease;
+  will-change: transform, opacity;
+}
+.globe-tag:hover,
+.globe-tag.is-active {
+  text-shadow: 0 0 18px currentColor;
+  filter: brightness(1.18);
+}
+.globe-tag:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+}
+.globe-legend {
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+  justify-content: center;
+  list-style: none;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.globe-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+.globe-legend i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
+}
+
 
 /* ===================== WORK (projects) ======================= */
 .work {
@@ -1207,9 +1325,6 @@ h2 {
 }
 
 @media (max-width: 920px) {
-  .stack {
-    grid-template-columns: 1fr 1fr;
-  }
   .work {
     grid-template-columns: 1fr;
   }
@@ -1221,11 +1336,26 @@ h2 {
     display: none;
   }
 }
+@media (max-width: 720px) {
+  .stack-row {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 22px 22px;
+  }
+  .globe-stage {
+    height: 400px;
+    max-width: 380px;
+  }
+  .globe-tag {
+    font-size: 11.5px;
+  }
+}
 @media (max-width: 640px) {
   .metrics-grid {
     grid-template-columns: 1fr 1fr;
   }
-  .stack {
-    grid-template-columns: 1fr;
+  .globe-tag {
+    font-size: 10.5px;
+    padding: 4px 8px;
   }
 }
