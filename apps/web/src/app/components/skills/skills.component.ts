@@ -15,7 +15,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { PORTFOLIO } from '../../core/data/portfolio.data';
 import { RevealDirective } from '../../shared/reveal.directive';
 
-type Cat = 'lang' | 'arch' | 'tool';
+type Cat = 'ai' | 'lang' | 'tool';
 
 interface GlobeTag {
   label: string;
@@ -23,16 +23,17 @@ interface GlobeTag {
   color: string;
 }
 
-/** On-theme colour per skill category — drives both globe tags and the legend. */
+/** On-theme colour per skill category — drives both globe tags and the legend.
+   Applied AI takes the amber "signal" accent so it reads as the headline skill. */
 const CAT_COLOR: Record<Cat, string> = {
-  lang: 'var(--signal)',
-  arch: 'var(--paper)',
+  ai: 'var(--signal)',
+  lang: 'var(--paper)',
   tool: 'var(--cyan)',
 };
 
 function categorize(title: string): Cat {
+  if (/\bAI\b|\bML\b/.test(title)) return 'ai';
   if (title === 'Languages') return 'lang';
-  if (title.startsWith('Architecture')) return 'arch';
   return 'tool';
 }
 
@@ -105,9 +106,9 @@ export class SkillsComponent {
     return g.skills.map((label) => ({ label, cat, color: CAT_COLOR[cat] }));
   });
   protected readonly legend = [
+    { label: 'Applied AI / ML', color: CAT_COLOR.ai },
     { label: 'Languages', color: CAT_COLOR.lang },
-    { label: 'Frameworks & Tools', color: CAT_COLOR.tool },
-    { label: 'Architecture', color: CAT_COLOR.arch },
+    { label: 'Frameworks & Infra', color: CAT_COLOR.tool },
   ];
   protected readonly animate = signal(false);
 
@@ -222,7 +223,7 @@ export class SkillsComponent {
 
       const el = this.els[i];
       el.style.transform = `translate(-50%,-50%) translate(${sx.toFixed(1)}px,${sy.toFixed(1)}px) scale(${sc.toFixed(3)})`;
-      el.style.opacity = Math.min(1, 0.3 + depth * 0.7 + h * 0.5).toFixed(2);
+      el.style.opacity = Math.min(1, 0.46 + depth * 0.54 + h * 0.5).toFixed(2);
       el.style.zIndex = String(Math.round(depth * 100 + h * 50));
       // Soften tags toward the back for real depth; keep highlighted ones crisp.
       const blur = Math.max(0, 0.5 - depth) * (1 - h) * 4;

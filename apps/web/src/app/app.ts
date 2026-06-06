@@ -73,10 +73,12 @@ export class App implements OnInit, AfterViewInit {
   ngOnInit(): void {
     const { profile } = PORTFOLIO;
     const description =
-      'Outhan Chazima — senior software engineer specialising in system design & architecture. Resilient, distributed, well-documented systems, payment rails and event-driven platforms. Nairobi, Kenya.';
+      'Outhan Chazima — software engineer specialising in system design, distributed ' +
+      'architecture and LLM-powered products. Builds RAG pipelines, AI agents and semantic search ' +
+      'alongside payment rails and event-driven platforms. Nairobi, Kenya.';
 
     this.seo.apply({
-      title: 'Outhan Chazima — Systems Architect',
+      title: 'Outhan Chazima — Applied AI & Software Engineer',
       description,
       url: SITE_URL,
       image: `${SITE_URL}og-image.png`,
@@ -86,11 +88,20 @@ export class App implements OnInit, AfterViewInit {
       '@context': 'https://schema.org',
       '@type': 'Person',
       name: profile.name,
-      jobTitle: 'Senior Software Engineer — System Design & Architecture',
+      jobTitle: 'Software Engineer — System Design & Architecture',
       description,
       url: SITE_URL,
       address: { '@type': 'PostalAddress', addressLocality: 'Nairobi', addressCountry: 'KE' },
       knowsAbout: [
+        'Applied AI',
+        'Large Language Models (LLMs)',
+        'Retrieval-Augmented Generation (RAG)',
+        'AI Agents',
+        'Prompt Engineering',
+        'Vector Databases',
+        'Semantic Search',
+        'Machine Learning',
+        'LangChain',
         'System Design',
         'Software Architecture',
         'Distributed Systems',

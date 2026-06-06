@@ -4,13 +4,14 @@ import { Portfolio } from '../models/portfolio.model';
 export const PORTFOLIO: Portfolio = {
   profile: {
     name: 'Outhan Chazima',
-    role: 'Senior Software Engineer',
+    role: 'Software Engineer',
     location: 'Nairobi, KE',
     headlineHtml: 'I design systems<br>that <em>scale</em> and<br>architectures that <em>last</em>.',
     taglineHtml:
-      'Outhan Chazima — specializing in <b>system design &amp; architecture</b>. ' +
-      'I turn ambiguous product problems into resilient, distributed, well-documented ' +
-      'systems — currently engineering travel-tech infrastructure at <b>Triply.co</b>.',
+      'Outhan Chazima — specializing in <b>system design &amp; architecture</b> and ' +
+      '<b>applied AI</b>. I turn ambiguous product problems into resilient, distributed ' +
+      'systems — and increasingly into <b>LLM-powered features</b>: RAG pipelines, AI agents, ' +
+      'and semantic search. Currently engineering travel-tech infrastructure at <b>Triply.co</b>.',
     meta: [
       { value: '6+', label: 'years engineering' },
       { value: 'BSc', label: 'Math & Computer Science' },
@@ -28,6 +29,10 @@ export const PORTFOLIO: Portfolio = {
     'Distributed Systems',
     'Microservices',
     'Event-Driven Architecture',
+    'Applied AI',
+    'LLMs & RAG',
+    'AI Agents',
+    'Vector Search',
     'Node.js / TypeScript',
     'Python / Django',
     'PostgreSQL',
@@ -124,6 +129,24 @@ export const PORTFOLIO: Portfolio = {
       id: 'STK.06',
       title: 'Infrastructure & DevOps',
       skills: ['Docker', 'Kubernetes', 'Linux', 'Nginx', 'Cloudflare', 'Azure DevOps', 'CI/CD'],
+    },
+    {
+      id: 'STK.07',
+      title: 'Applied AI & ML',
+      skills: [
+        'LLM Integration',
+        'RAG Pipelines',
+        'AI Agents',
+        'LangChain',
+        'Vector Databases',
+        'Embeddings',
+        'Semantic Search',
+        'Prompt Engineering',
+        'OpenAI / Anthropic APIs',
+        'PyTorch',
+        'Hugging Face',
+        'Model Evaluation',
+      ],
     },
   ],
 
@@ -231,9 +254,10 @@ export const PORTFOLIO: Portfolio = {
       highlights: [
         'Own architecture decisions across booking, payments, and notification services.',
         'Design event-driven workflows for reliability under unpredictable third-party APIs.',
+        'Build LLM-powered features — RAG over travel content and AI agents that assist booking flows — with evaluation, cost and latency budgets baked in.',
         'Lead design reviews and mentor engineers on system-design thinking.',
       ],
-      chips: ['Node.js', 'TypeScript', 'PostgreSQL', 'Redis', 'Event-driven', 'Cloud'],
+      chips: ['Node.js', 'TypeScript', 'PostgreSQL', 'Redis', 'Event-driven', 'LLMs / RAG', 'Cloud'],
     },
     {
       role: 'Software Engineer',
