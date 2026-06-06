@@ -21,6 +21,7 @@ import { ExperienceComponent } from './components/experience/experience.componen
 import { PrinciplesComponent } from './components/principles/principles.component';
 import { WritingComponent } from './components/writing/writing.component';
 import { CertificationsComponent } from './components/certifications/certifications.component';
+import { GithubComponent } from './components/github/github.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { ConsentComponent } from './components/consent/consent.component';
@@ -46,6 +47,7 @@ const SITE_URL = 'https://outhanchazima.dev/';
     ExperienceComponent,
     PrinciplesComponent,
     WritingComponent,
+    GithubComponent,
     CertificationsComponent,
     ContactComponent,
     FooterComponent,
@@ -66,6 +68,7 @@ const SITE_URL = 'https://outhanchazima.dev/';
       <app-experience />
       <app-principles />
       <app-writing />
+      <app-github />
       <app-certifications />
       <app-contact />
     </main>

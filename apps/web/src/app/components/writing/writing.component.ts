@@ -1,6 +1,15 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { PORTFOLIO } from '../../core/data/portfolio.data';
 import { RevealDirective } from '../../shared/reveal.directive';
+import { MediumService, MediumPost } from '../../core/services/medium.service';
+
+interface Post {
+  ref: string;
+  title: string;
+  blurb: string;
+  url: string;
+}
 
 @Component({
   selector: 'app-writing',
@@ -14,7 +23,7 @@ import { RevealDirective } from '../../shared/reveal.directive';
           <span class="sec-num">SEC.04 / OUTPUT</span>
         </div>
         <div class="posts">
-          @for (post of writing; track post.ref) {
+          @for (post of posts(); track post.ref) {
             <a class="post" appReveal [href]="post.url" target="_blank" rel="noopener noreferrer">
               <span class="pn">{{ post.ref }}</span>
               <div>
@@ -30,5 +39,22 @@ import { RevealDirective } from '../../shared/reveal.directive';
   `,
 })
 export class WritingComponent {
-  protected readonly writing = PORTFOLIO.writing;
+  private readonly medium = inject(MediumService);
+  private readonly livePosts = toSignal(this.medium.load(), {
+    initialValue: [] as MediumPost[],
+  });
+
+  /** Live Medium posts when available, otherwise the curated static list. */
+  protected readonly posts = computed<readonly Post[]>(() => {
+    const live = this.livePosts();
+    if (live.length) {
+      return live.map((p, i) => ({
+        ref: `LOG.${String(i + 1).padStart(3, '0')}`,
+        title: p.title,
+        blurb: p.date ? `${p.date} · ${p.blurb}` : p.blurb,
+        url: p.url,
+      }));
+    }
+    return PORTFOLIO.writing;
+  });
 }
