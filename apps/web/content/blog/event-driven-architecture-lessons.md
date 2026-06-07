@@ -11,6 +11,18 @@ Event-driven architecture is sold as the cure for tight coupling. It is — but
 it trades synchronous bugs you can see for asynchronous ones you can't. Here are
 five lessons I keep relearning.
 
+The shape of a resilient consumer — success commits, repeated failures go to a
+dead-letter topic, and a fixed bug lets you replay:
+
+```mermaid
+flowchart LR
+  P[Producer] --> T{{Kafka topic}}
+  T --> C[Consumer]
+  C -->|success| D[(Datastore)]
+  C -->|fails x N| DLQ[[Dead-letter topic]]
+  DLQ -. replay after fix .-> C
+```
+
 ## 1. Consumers must be idempotent
 
 At-least-once delivery is the default almost everywhere. Your consumer **will**

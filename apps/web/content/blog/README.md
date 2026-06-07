@@ -28,7 +28,35 @@ draft: false # optional — true hides the post from build output
 - Fenced code blocks are syntax-highlighted (Shiki, dual light/dark theme).
 - `##` and `###` headings automatically get anchor links and feed the
   table of contents.
-- Cover images and any inline images live under `apps/web/public/blog/<slug>/`.
+
+### Images
+
+Standard Markdown — works with both uploaded files and remote URLs. Images are
+lazy-loaded automatically.
+
+```markdown
+![Alt text](/blog/my-post/architecture.png) <!-- uploaded: apps/web/public/blog/my-post/ -->
+![Alt text](https://example.com/diagram.png) <!-- remote URL -->
+```
+
+Put uploaded images under `apps/web/public/blog/<slug>/` and reference them with
+an absolute path (`/blog/<slug>/file.png`). The `cover:` frontmatter field uses
+the same paths.
+
+### Mermaid diagrams
+
+Use a fenced code block with the `mermaid` language. It renders to an SVG in the
+browser, themed to match light/dark mode:
+
+````markdown
+```mermaid
+flowchart LR
+  A[Client] --> B{Gateway}
+  B --> C[Service]
+```
+````
+
+The raw definition stays in the HTML, so it's crawlable and visible without JS.
 
 On `npm run build` / `npm start`, the prebuild step regenerates the post data,
 the sitemap and the RSS feed automatically.
