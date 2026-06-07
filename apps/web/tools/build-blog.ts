@@ -239,9 +239,13 @@ async function build(): Promise<void> {
 
     const html = md.render(content);
     const stats = readingTime(content);
-    const tags: string[] = Array.isArray(data['tags']) ? data['tags'].map(String) : [];
-    const reading = stats.text;
-    const ogImage = generateOgImage(slug, String(data['title']), tags, reading);
+const tags: string[] = Array.isArray(data['tags']) ? data['tags'].map(String) : [];
+const reading = stats.text;
+if (slug.includes('..') || /[\\/]/.test(slug)) {
+  console.warn(`[blog] "${file}" has an invalid slug "${slug}" — skipped.`);
+  continue;
+}
+const ogImage = generateOgImage(slug, String(data['title']), tags, reading);
 
     // Raw Markdown endpoint for "View / Copy as Markdown" + LLM links.
     writeFileSync(
