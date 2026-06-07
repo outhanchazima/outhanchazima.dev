@@ -58,5 +58,5 @@ flowchart LR
 
 The raw definition stays in the HTML, so it's crawlable and visible without JS.
 
-On `npm run build` / `npm start`, the prebuild step regenerates the post data,
+On `bun run build` / `bun run start`, the prebuild step regenerates the post data,
 the sitemap and the RSS feed automatically.
