@@ -10,13 +10,16 @@ Server-side rendered for SEO, served on **Bun**, deployed to a private Linux ser
 
 | Layer        | Choice                                                            |
 | ------------ | ----------------------------------------------------------------- |
-| Framework    | Angular 22 (standalone components, signals, SSR + prerender)      |
+| Framework    | Angular 22 (standalone components, signals, router, SSR + prerender) |
 | Design       | Bespoke "blueprint" system — Fraunces + IBM Plex Mono, drafting grid |
 | Styling      | CSS-variable theming (`styles.scss`) + TailwindCSS v4 available    |
 | Language     | TypeScript (strict)                                               |
 | Runtime      | Bun (build **and** production server)                             |
 | Monorepo     | Bun workspaces                                                    |
-| SEO          | SSR meta + Open Graph + Twitter cards + JSON-LD, sitemap, robots  |
+| Blog         | Markdown → build-time render (markdown-it + Shiki + Mermaid), per-post pages |
+| SEO          | SSR meta + Open Graph + Twitter cards + JSON-LD, per-post OG images, sitemap, RSS, robots |
+| Analytics    | PostHog (consent-gated, lazy-loaded) — pageviews, web vitals, session replay |
+| Integrations | Contact form (Web3Forms) + inline booking calendar (Cal.com)      |
 | Delivery     | Docker (multi-stage) + Cloudflare Tunnel (`cloudflared`)          |
 
 ## Repository layout
@@ -25,17 +28,28 @@ Server-side rendered for SEO, served on **Bun**, deployed to a private Linux ser
 outhanchazima.dev/
 ├── apps/
 │   └── web/                     # Angular 22 SSR application
+│       ├── content/
+│       │   └── blog/            # ← Markdown blog posts (one .md = one article)
 │       ├── src/
 │       │   ├── app/
-│       │   │   ├── components/  # navbar, hero, stats, about, skills, …
-│       │   │   ├── core/        # data (single source of truth), models, services
-│       │   │   └── shared/      # icon component, reveal directive
+│       │   │   ├── app.routes.ts        # / (home), /blog, /blog/:slug
+│       │   │   ├── components/          # home, hero, navbar, skills, projects, blog/, …
+│       │   │   ├── core/
+│       │   │   │   ├── config/          # analytics, contact (your keys go here)
+│       │   │   │   ├── data/            # portfolio.data.ts + blog.generated.ts (auto)
+│       │   │   │   ├── models/
+│       │   │   │   └── services/        # seo, blog, analytics, github, medium, viewport, theme
+│       │   │   └── shared/              # icon component, reveal + echo-title directives
 │       │   ├── server.ts        # Bun/Express SSR entry (+ /healthz)
 │       │   ├── index.html       # base SEO + no-flash theme bootstrap
 │       │   ├── styles.scss      # the "blueprint" design system + theming
 │       │   └── tailwind.css     # Tailwind entry (utilities + dark variant)
-│       ├── public/              # favicon, og-image, manifest, robots, sitemap, résumé
-│       └── tools/               # build-time asset generation (OG image, icons)
+│       ├── public/              # favicon, og-image, manifest, robots, résumé, blog assets
+│       │   └── blog/            # uploaded post images + auto-generated og.png / raw .md
+│       └── tools/
+│           ├── build-blog.ts    # Markdown → data + RSS + sitemap + per-post OG images
+│           ├── generate-assets.ts
+│           └── assets/          # vendored OFL font for OG-image text
 ├── deploy/
 │   ├── Dockerfile               # multi-stage Bun build → minimal Bun runtime
 │   ├── docker-compose.yml       # web + cloudflared (token-based tunnel)
@@ -46,6 +60,10 @@ outhanchazima.dev/
 ├── package.json                 # workspace root + scripts
 └── README.md
 ```
+
+> **Generated files** (don't hand-edit — `build-blog.ts` rewrites them on every
+> build/start): `src/app/core/data/blog.generated.ts`, `public/rss.xml`,
+> `public/sitemap.xml`, `public/blog/<slug>.md`, `public/blog/<slug>/og.png`.
 
 ## Local development
 
@@ -59,15 +77,19 @@ bun run dev            # ng serve with HMR → http://localhost:4200
 Other useful scripts (run from the repo root):
 
 ```bash
-bun run build          # production SSR build (prerenders the homepage)
+bun run build          # production SSR build (prerenders home + every blog post)
 bun run start          # run the built SSR server on Bun → http://localhost:4000
 bun run test           # unit tests
-bun run assets         # regenerate OG image + icons from SVG sources
+bun run blog           # regenerate blog data, RSS, sitemap + per-post OG images
+bun run assets         # regenerate the site OG image + icons from SVG sources
 ```
 
-## Editing content
+> `bun run dev`, `bun run build` and `bun run start` all run the blog generator
+> first (via `pre*` hooks), so you rarely need to call `bun run blog` by hand.
 
-All content lives in one typed file — no template hunting:
+## Editing the portfolio content
+
+All portfolio content lives in one typed file — no template hunting:
 
 ```
 apps/web/src/app/core/data/portfolio.data.ts
@@ -76,6 +98,92 @@ apps/web/src/app/core/data/portfolio.data.ts
 Update the profile, stats, skills, experience, or projects there and everything
 re-renders. To refresh the downloadable résumé, replace
 `apps/web/public/Outhan-Chazima-Resume.pdf`.
+
+## Writing blog posts
+
+Posts are plain Markdown files. **Add one file, get a fully-rendered, SEO-ready
+article** at `/blog/<filename>` — no code changes.
+
+### 1. Create the file
+
+```
+apps/web/content/blog/my-post-title.md
+```
+
+The file name (without `.md`) becomes the URL slug: `/blog/my-post-title`.
+
+### 2. Add frontmatter
+
+```yaml
+---
+title: 'A clear, descriptive title' # required
+description: 'One-sentence summary — used for SEO + the card excerpt.' # required
+date: 2026-06-07 # required (YYYY-MM-DD)
+updated: 2026-06-10 # optional
+tags: [System Design, TypeScript] # optional
+cover: /blog/my-post-title/cover.png # optional (see images below)
+keywords: 'extra, seo, keywords' # optional (defaults to tags)
+author: 'Outhan Chazima' # optional
+draft: false # optional — true hides it from the build
+---
+```
+
+### 3. Write Markdown
+
+Everything standard works, plus:
+
+- **Code blocks** — syntax-highlighted with Shiki (dual light/dark theme), with a
+  hover **copy** button.
+- **Mermaid diagrams** — fenced \`\`\`mermaid blocks render to brand-themed SVG:
+
+  ````markdown
+  ```mermaid
+  flowchart LR
+    A[Client] --> B{Gateway} --> C[Service]
+  ```
+  ````
+
+- **Images** — standard Markdown, lazy-loaded, click to zoom (lightbox). Use an
+  uploaded file or a remote URL:
+
+  ```markdown
+  ![Alt text](/blog/my-post-title/diagram.png)
+  ![Alt text](https://example.com/diagram.png)
+  ```
+
+  Uploaded images (and the optional `cover:`) live in
+  `apps/web/public/blog/<slug>/`.
+
+- **Headings** (`##`, `###`) auto-get anchor links and feed the table of contents.
+
+### 4. Build
+
+```bash
+bun run blog   # or just bun run dev / build — the pre-hook runs it
+```
+
+The generator (`apps/web/tools/build-blog.ts`) automatically: renders the
+Markdown, computes reading time + TOC, and regenerates the **RSS feed**, the
+**sitemap**, a raw `.md` endpoint, and a **branded 1200×630 OG image** per post.
+Each article ships full per-post SEO (title, description, canonical, Open Graph
+`article` tags, Twitter card, and `BlogPosting` + `BreadcrumbList` JSON-LD).
+
+The authoring reference also lives next to the posts in
+[`apps/web/content/blog/README.md`](apps/web/content/blog/README.md).
+
+## Configuration & integrations
+
+Third-party keys live in small, committed config files (the public keys are safe
+to ship; until set, each feature degrades gracefully):
+
+| Feature        | File                                        | What to set                              |
+| -------------- | ------------------------------------------- | ---------------------------------------- |
+| Analytics      | `apps/web/src/app/core/config/analytics.config.ts` | PostHog project key + host (US/EU)  |
+| Contact form   | `apps/web/src/app/core/config/contact.config.ts`   | Web3Forms access key                |
+| Booking        | `apps/web/src/app/core/config/contact.config.ts`   | Cal.com link (e.g. `cal.com/you`)   |
+
+The **GitHub** stats band and the **Medium** writing feed fetch live data at SSR
+time (transferred to the client, with static fallbacks) — no keys required.
 
 ## Theming
 
@@ -93,14 +201,21 @@ everything.
 
 ## SEO & "good-to-haves"
 
-- **SSR + prerender** — crawlers and link unfurlers get fully populated HTML.
-- **Open Graph + Twitter cards** — branded 1200×630 preview image (`/og-image.png`).
-- **JSON-LD** `Person` structured data injected at runtime.
-- **Canonical URL**, `robots.txt`, `sitemap.xml`, web app manifest, maskable icons.
+- **SSR + prerender** — every route (home + each blog post) is prerendered to
+  static HTML, so crawlers and link unfurlers get fully populated pages.
+- **Open Graph + Twitter cards** — site image (`/og-image.png`) plus a **unique
+  branded OG image generated per blog post**.
+- **JSON-LD** — `Person` on the home page; `BlogPosting` + `BreadcrumbList` on
+  each article.
+- **Canonical URLs**, **`sitemap.xml`** (auto-includes every post), **`rss.xml`**
+  feed, `robots.txt`, web app manifest, maskable icons.
 - **Accessibility** — skip link, semantic landmarks, ARIA labels, visible focus,
   `prefers-reduced-motion` respected, WCAG-AA contrast in both themes.
 - **Performance** — OnPush change detection, lean self-contained server bundle,
-  scroll-reveal via `IntersectionObserver` (progressive enhancement).
+  lazy-loaded blog/diagram code, scroll-reveal via `IntersectionObserver`.
+- **Reading UX** — table-of-contents scroll-spy, per-article reading-progress bar,
+  back-to-top, ←/→ keyboard nav between posts, and a share/"copy as Markdown /
+  open in ChatGPT · Claude" menu.
 
 ---
 

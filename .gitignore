@@ -1,28 +1,51 @@
-# Dependencies
+# ───────────────────────── Dependencies ─────────────────────────
 node_modules/
 .bun/
 
-# Build output
+# ──────────────────────── Build output ──────────────────────────
+dist/
 apps/web/dist/
 apps/web/.angular/
-dist/
+.angular/
+*.tsbuildinfo
 
-# Env & secrets
+# ─────────── Generated content (rebuilt by tools/build-blog.ts) ──────────
+# Source of truth is apps/web/content/blog/*.md — these are build artifacts.
+# (Uploaded post images under apps/web/public/blog/<slug>/ stay tracked.)
+apps/web/src/app/core/data/blog.generated.ts
+apps/web/public/rss.xml
+apps/web/public/sitemap.xml
+apps/web/public/blog/*.md
+apps/web/public/blog/**/og.png
+
+# ─────────────────────── Env & secrets ──────────────────────────
 .env
 .env.*
 !.env.example
 deploy/.env
 
-# Cloudflare tunnel secrets (never commit credentials)
+# Cloudflare tunnel credentials — never commit
 deploy/cloudflared/*.json
 deploy/cloudflared/cert.pem
 deploy/cloudflared/config.yml
 
-# Logs & OS
+# ──────────────────── Testing & coverage ────────────────────────
+coverage/
+/out-tsc
+__screenshots__/
+
+# ───────────────────────── Logs ─────────────────────────────────
 *.log
 npm-debug.log*
-.DS_Store
+yarn-error.log*
+bun-debug.log*
 
-# Editor
+# ──────────────────────── Editor & OS ───────────────────────────
 .idea/
+.vscode/*
+!.vscode/extensions.json
 *.swp
+*.swo
+.history/
+.DS_Store
+Thumbs.db
