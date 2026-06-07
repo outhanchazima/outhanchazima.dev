@@ -65,7 +65,7 @@ function slugify(s: string): string {
 }
 
 async function createMarkdown(): Promise<MarkdownIt> {
-  const md = new MarkdownIt({ html: true, linkify: true, typographer: true });
+  const md = new MarkdownIt({ html: false, linkify: true, typographer: true });
   md.use(
     await Shiki({
       themes: { light: 'github-light', dark: 'github-dark' },
