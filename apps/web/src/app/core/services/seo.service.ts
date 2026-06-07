@@ -6,6 +6,10 @@ export interface SeoConfig {
   description: string;
   url: string;
   image: string;
+  type?: 'website' | 'article';
+  keywords?: string;
+  publishedTime?: string | null;
+  modifiedTime?: string | null;
 }
 
 /**
@@ -27,12 +31,19 @@ export class SeoService {
     this.setName('twitter:description', config.description);
     this.setName('twitter:image', config.image);
     this.setName('twitter:card', 'summary_large_image');
+    if (config.keywords) {
+      this.setName('keywords', config.keywords);
+    }
 
     this.setProperty('og:title', config.title);
     this.setProperty('og:description', config.description);
     this.setProperty('og:url', config.url);
     this.setProperty('og:image', config.image);
-    this.setProperty('og:type', 'website');
+    this.setProperty('og:type', config.type ?? 'website');
+
+    // Article-specific Open Graph signals (cleared back to empty on non-articles).
+    this.setProperty('article:published_time', config.publishedTime ?? '');
+    this.setProperty('article:modified_time', config.modifiedTime ?? '');
 
     this.setCanonical(config.url);
   }

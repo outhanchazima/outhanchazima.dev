@@ -1,4 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map } from 'rxjs';
 import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
 import { ViewportService } from '../../core/services/viewport.service';
 
@@ -11,18 +14,23 @@ interface NavLink {
 @Component({
   selector: 'app-navbar',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ThemeToggleComponent],
+  imports: [ThemeToggleComponent, RouterLink, RouterLinkActive],
   template: `
     <nav class="nav">
       <div class="nav-inner">
-        <a href="#top" class="logo"><span class="dot"></span>OUTHAN.CHAZIMA</a>
+        <a routerLink="/" fragment="top" class="logo"><span class="dot"></span>OUTHAN.CHAZIMA</a>
         <div class="nav-right">
           <div class="nav-links">
             @for (link of links; track link.fragment) {
-              <a [href]="'#' + link.fragment" [class.active]="viewport.activeId() === link.fragment">
+              <a
+                routerLink="/"
+                [fragment]="link.fragment"
+                [class.active]="onHome() && viewport.activeId() === link.fragment"
+              >
                 <span>{{ link.num }}</span>{{ link.label }}
               </a>
             }
+            <a routerLink="/blog" routerLinkActive="active"><span>08</span>Blog</a>
           </div>
           <app-theme-toggle />
         </div>
@@ -33,6 +41,16 @@ interface NavLink {
 })
 export class NavbarComponent {
   protected readonly viewport = inject(ViewportService);
+  private readonly router = inject(Router);
+
+  private readonly url = toSignal(
+    this.router.events.pipe(
+      filter((e) => e instanceof NavigationEnd),
+      map(() => this.router.url),
+    ),
+    { initialValue: this.router.url },
+  );
+  protected readonly onHome = computed(() => !this.url().startsWith('/blog'));
 
   protected readonly links: readonly NavLink[] = [
     { num: '01', label: 'Expertise', fragment: 'expertise' },

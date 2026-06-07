@@ -29,7 +29,7 @@ export class ViewportService {
   readonly progress = signal(0);
   readonly activeId = signal<string>('top');
 
-  /** Call once after the full view (all sections) is in the DOM. */
+  /** Scroll progress + parallax. Safe to call once at app start (any route). */
   init(): void {
     if (this.started || !isPlatformBrowser(this.platformId)) {
       return;
@@ -57,11 +57,19 @@ export class ViewportService {
     update();
 
     this.initParallax(win);
+    this.observeSections();
+  }
 
-    if (typeof IntersectionObserver === 'undefined') {
+  /**
+   * (Re)bind the active-section scroll-spy to whatever sections are currently
+   * in the DOM. Called by the home page after its sections render — so it works
+   * on the first load and after navigating back from another route.
+   */
+  observeSections(): void {
+    if (!isPlatformBrowser(this.platformId) || typeof IntersectionObserver === 'undefined') {
       return;
     }
-
+    this.observer?.disconnect();
     // Active-section detection: a band across the middle of the viewport.
     this.observer = new IntersectionObserver(
       (entries) => {
