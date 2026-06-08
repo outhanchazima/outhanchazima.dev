@@ -25,7 +25,34 @@ import { MagneticDirective } from '../../shared/magnetic.directive';
       </a>
       <div class="wrap hero-grid">
         <div>
-          <span class="tag reveal d1">{{ profile.role }} · {{ profile.location }}</span>
+          <!--
+            Identity block — headshot framed as a blueprint "plate" (registration
+            corner ticks, duotone that resolves to colour on hover) beside the
+            role tag + availability. Plain <img> (not NgOptimizedImage) so a
+            missing file degrades gracefully via the (error) handler — the plate
+            simply drops out, leaving the tag, with no broken-image icon.
+          -->
+          <div class="hero-id reveal d1">
+            @if (showPhoto()) {
+              <figure class="hero-plate">
+                <img
+                  class="hero-photo"
+                  src="/profile.png"
+                  alt="Outhan Chazima"
+                  width="104"
+                  height="104"
+                  decoding="async"
+                  (error)="showPhoto.set(false)"
+                />
+              </figure>
+            }
+            <div class="hero-id-meta">
+              <span class="tag">{{ profile.role }} · {{ profile.location }}</span>
+              <span class="hero-status">
+                <i class="hero-status-dot" aria-hidden="true"></i>Open to architecture challenges
+              </span>
+            </div>
+          </div>
           <h1 class="reveal d2" [innerHTML]="headline"></h1>
           <p class="hero-sub reveal d3" [innerHTML]="tagline"></p>
 
@@ -118,6 +145,9 @@ export class HeroComponent implements OnInit, OnDestroy {
 
   /** Playful "uptime" clock in the diagram caption — browser-only. */
   protected readonly uptime = signal('UPTIME 00:00:00');
+
+  /** Hidden if /profile.jpg is absent (see template note). */
+  protected readonly showPhoto = signal(true);
 
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) {

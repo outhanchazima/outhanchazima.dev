@@ -18,7 +18,6 @@ import { ProjectsComponent } from '../projects/projects.component';
 import { ExperienceComponent } from '../experience/experience.component';
 import { PrinciplesComponent } from '../principles/principles.component';
 import { WritingComponent } from '../writing/writing.component';
-import { GithubComponent } from '../github/github.component';
 import { CertificationsComponent } from '../certifications/certifications.component';
 import { ContactComponent } from '../contact/contact.component';
 
@@ -36,7 +35,6 @@ const SITE_URL = 'https://outhanchazima.dev/';
     ExperienceComponent,
     PrinciplesComponent,
     WritingComponent,
-    GithubComponent,
     CertificationsComponent,
     ContactComponent,
   ],
@@ -49,7 +47,6 @@ const SITE_URL = 'https://outhanchazima.dev/';
     <app-experience />
     <app-principles />
     <app-writing />
-    <app-github />
     <app-certifications />
     <app-contact />
   `,
@@ -79,42 +76,71 @@ export class HomeComponent implements OnInit, AfterViewInit {
       'alongside payment rails and event-driven platforms. Nairobi, Kenya.';
 
     this.seo.apply({
-      title: 'Outhan Chazima — Applied AI & Software Engineer',
+      title: 'Outhan Chazima — Systems Architect & Software Engineer',
       description,
       url: SITE_URL,
       image: `${SITE_URL}og-image.png`,
     });
 
+    const personId = `${SITE_URL}#person`;
+    const websiteId = `${SITE_URL}#website`;
+
     this.seo.setJsonLd({
       '@context': 'https://schema.org',
-      '@type': 'Person',
-      name: profile.name,
-      jobTitle: 'Software Engineer — System Design & Architecture',
-      description,
-      url: SITE_URL,
-      address: { '@type': 'PostalAddress', addressLocality: 'Nairobi', addressCountry: 'KE' },
-      knowsAbout: [
-        'Applied AI',
-        'Large Language Models (LLMs)',
-        'Retrieval-Augmented Generation (RAG)',
-        'AI Agents',
-        'Prompt Engineering',
-        'Vector Databases',
-        'Semantic Search',
-        'Machine Learning',
-        'LangChain',
-        'System Design',
-        'Software Architecture',
-        'Distributed Systems',
-        'Microservices',
-        'Event-Driven Architecture',
-        'Payments & Fintech',
-        'Kafka',
-        'PostgreSQL',
-        'Docker',
-        'Kubernetes',
+      '@graph': [
+        {
+          '@type': 'Person',
+          '@id': personId,
+          name: profile.name,
+          jobTitle: 'Systems Architect & Software Engineer',
+          description,
+          url: SITE_URL,
+          image: `${SITE_URL}profile.jpg`,
+          address: { '@type': 'PostalAddress', addressLocality: 'Nairobi', addressCountry: 'KE' },
+          worksFor: { '@type': 'Organization', name: 'Triply', url: 'https://triply.co' },
+          alumniOf: { '@type': 'CollegeOrUniversity', name: 'Machakos University' },
+          knowsAbout: [
+            'System Design',
+            'Software Architecture',
+            'Distributed Systems',
+            'Microservices',
+            'Event-Driven Architecture',
+            'Scalability Engineering',
+            'Payments & Fintech',
+            'Applied AI',
+            'Large Language Models (LLMs)',
+            'Retrieval-Augmented Generation (RAG)',
+            'AI Agents',
+            'Prompt Engineering',
+            'Vector Databases',
+            'Semantic Search',
+            'LangChain',
+            'Apache Kafka',
+            'PostgreSQL',
+            'Docker',
+            'Kubernetes',
+          ],
+          sameAs: profile.socials.map((s) => s.url),
+        },
+        {
+          '@type': 'WebSite',
+          '@id': websiteId,
+          url: SITE_URL,
+          name: profile.name,
+          description,
+          inLanguage: 'en',
+          publisher: { '@id': personId },
+        },
+        {
+          '@type': 'ProfilePage',
+          '@id': `${SITE_URL}#profilepage`,
+          url: SITE_URL,
+          name: 'Outhan Chazima — Systems Architect & Software Engineer',
+          isPartOf: { '@id': websiteId },
+          about: { '@id': personId },
+          mainEntity: { '@id': personId },
+        },
       ],
-      sameAs: profile.socials.map((s) => s.url),
     });
   }
 

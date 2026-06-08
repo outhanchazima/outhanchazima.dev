@@ -34,6 +34,11 @@ import { EchoTitleDirective } from '../../shared/echo-title.directive';
               <h3>{{ project.name }}</h3>
               <div class="work-ctx">{{ project.context }}</div>
               <p>{{ project.description }}</p>
+              @if (project.details) {
+                <p class="work-note">
+                  <span class="work-note-mark" aria-hidden="true">▪</span>{{ project.details }}
+                </p>
+              }
               <ul class="work-impact">
                 @for (item of project.impact; track item) {
                   <li>{{ item }}</li>

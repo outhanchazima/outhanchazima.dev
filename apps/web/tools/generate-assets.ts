@@ -40,7 +40,7 @@ const ogSvg = `
   <!-- schematic label -->
   <g transform="translate(80,150)">
     <rect width="26" height="2" y="9" fill="#ffb224"/>
-    <text x="42" y="15" font-family="monospace" font-size="17" letter-spacing="4" fill="#ffb224">SENIOR SOFTWARE ENGINEER · NAIROBI, KE</text>
+    <text x="42" y="15" font-family="monospace" font-size="16" letter-spacing="3.5" fill="#ffb224">SYSTEMS ARCHITECT &amp; SOFTWARE ENGINEER · NAIROBI, KE</text>
   </g>
 
   <!-- headline (Fraunces not embedded in resvg → serif fallback) -->

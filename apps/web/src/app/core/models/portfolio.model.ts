@@ -52,14 +52,6 @@ export interface Principle {
   readonly description: string;
 }
 
-export interface Post {
-  /** Log reference, e.g. "LOG.001". */
-  readonly ref: string;
-  readonly title: string;
-  readonly blurb: string;
-  readonly url: string;
-}
-
 export interface Contact {
   readonly tag: string;
   /** Contact headline as trusted HTML (may contain <br>). */
@@ -92,6 +84,12 @@ export interface Project {
   readonly featured: boolean;
   readonly url?: string;
   readonly repo?: string;
+  /**
+   * Short availability note for proprietary / NDA work, e.g.
+   * "Proprietary — details on request". Rendered as a subtle line under the
+   * description so closed-source projects still read as credible.
+   */
+  readonly details?: string;
 }
 
 export interface Certification {
@@ -109,7 +107,6 @@ export interface Portfolio {
   readonly projects: readonly Project[];
   readonly experience: readonly Job[];
   readonly principles: readonly Principle[];
-  readonly writing: readonly Post[];
   readonly certifications: readonly Certification[];
   readonly contact: Contact;
 }

@@ -4,7 +4,7 @@ import { Portfolio } from '../models/portfolio.model';
 export const PORTFOLIO: Portfolio = {
   profile: {
     name: 'Outhan Chazima',
-    role: 'Software Engineer',
+    role: 'Systems Architect & Software Engineer',
     location: 'Nairobi, KE',
     headlineHtml: 'I design systems<br>that <em>scale</em> and<br>architectures that <em>last</em>.',
     taglineHtml:
@@ -164,6 +164,7 @@ export const PORTFOLIO: Portfolio = {
         'Unified view across all transaction sources',
       ],
       stack: ['Kafka', 'Django', 'Cassandra', 'Redis', 'Angular'],
+      details: 'Proprietary — architecture walkthrough available on request',
     },
     {
       name: 'Disbursement Platform',
@@ -178,6 +179,7 @@ export const PORTFOLIO: Portfolio = {
         'Multi-channel payout routing',
       ],
       stack: ['Django', 'Node.js', 'PostgreSQL', 'Redis', 'Angular'],
+      details: 'Proprietary — architecture walkthrough available on request',
     },
     {
       name: 'Airports Authority Revenue Collection',
@@ -188,6 +190,7 @@ export const PORTFOLIO: Portfolio = {
         'Revenue-collection system used across every airport and airstrip in Kenya, including a USSD app and an Android POS for parking-fee enforcement. Led a team of four.',
       impact: ['2M+ KES collected daily', 'eCitizen & M-Pesa STK push', 'Led a team of 4 engineers'],
       stack: ['NestJS', 'PostgreSQL', 'USSD', 'Android POS', 'M-Pesa'],
+      details: 'Government deployment — details available on request',
     },
     {
       name: 'Ferry Payment System',
@@ -198,6 +201,7 @@ export const PORTFOLIO: Portfolio = {
         'Cashless gate-control and revenue-collection system for ferry crossings, integrated with M-Pesa and eCitizen for secure transaction processing.',
       impact: ['$6k → $23k daily collections', '100% cashless collection', 'Automated gate control'],
       stack: ['NestJS', 'PostgreSQL', 'M-Pesa', 'eCitizen'],
+      details: 'Government deployment — details available on request',
     },
     {
       name: 'Multi-Telco USSD Proxy',
@@ -208,16 +212,18 @@ export const PORTFOLIO: Portfolio = {
         'A configurable USSD gateway bridging Safaricom, Airtel and Telkom, with validation checks that let teams stand up new USSD applications quickly.',
       impact: ['Unified 3 telco integrations', 'Config-driven USSD apps', 'Built-in request validation'],
       stack: ['NestJS', 'Node.js', 'PostgreSQL'],
+      details: 'Proprietary — architecture walkthrough available on request',
     },
     {
       name: 'CBK Reporting System',
-      context: 'Regulatory · Open work',
+      context: 'Central Bank of Kenya · Regulatory',
       tag: 'FinTech',
       featured: true,
       description:
         'A Django platform that automates collection, validation and submission of regulatory financial reports to the Central Bank of Kenya for payment service providers.',
       impact: ['Automated regulatory reporting', 'Validation & submission pipeline', 'Dockerised deployment'],
       stack: ['Django', 'PostgreSQL', 'Docker', 'Angular'],
+      details: 'Proprietary regulatory system — details available on request',
     },
     {
       name: 'OAuth2 / OIDC Auth Server',
@@ -233,7 +239,7 @@ export const PORTFOLIO: Portfolio = {
     {
       name: 'ArtTouch.ke Commerce API',
       context: 'Art Touch Enterprise',
-      tag: 'Open work',
+      tag: 'Open source',
       featured: false,
       description:
         'A high-performance e-commerce REST API built on Bun and Elysia with PostgreSQL, Redis caching, Zod validation and structured Pino logging.',
@@ -324,27 +330,6 @@ export const PORTFOLIO: Portfolio = {
       title: 'Scale is a measurement, not a guess',
       description:
         'Capacity decisions come from numbers — load tests, p99 latencies, and growth curves — not vibes.',
-    },
-  ],
-
-  writing: [
-    {
-      ref: 'LOG.001',
-      title: 'JavaScript Generators, under the hood',
-      blurb: 'What they are, how they work, and where they shine in real projects.',
-      url: 'https://medium.com/@outhan254',
-    },
-    {
-      ref: 'LOG.002',
-      title: 'More engineering notes on Medium',
-      blurb: 'AI/ML experiments, blockchain explorations, and systems thinking.',
-      url: 'https://medium.com/@outhan254',
-    },
-    {
-      ref: 'LOG.003',
-      title: '145+ repositories on GitHub',
-      blurb: 'Open code, experiments, and tools — @outhanchazima.',
-      url: 'https://github.com/outhanchazima',
     },
   ],
 

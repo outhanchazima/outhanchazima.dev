@@ -1,21 +1,32 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { PORTFOLIO } from '../../core/data/portfolio.data';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { RevealDirective } from '../../shared/reveal.directive';
 import { EchoTitleDirective } from '../../shared/echo-title.directive';
-import { MediumService, MediumPost } from '../../core/services/medium.service';
+import { BlogService } from '../../core/services/blog.service';
 
-interface Post {
-  ref: string;
-  title: string;
-  blurb: string;
-  url: string;
+interface WritingEntry {
+  readonly ref: string;
+  readonly slug: string;
+  readonly title: string;
+  readonly blurb: string;
+}
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/** Formats an ISO date ("2026-06-07T…") to "7 Jun 2026" without Date globals. */
+function formatDate(iso: string): string {
+  const [y, m, d] = iso.slice(0, 10).split('-');
+  return `${Number(d)} ${MONTHS[Number(m) - 1] ?? ''} ${y}`;
+}
+
+function truncate(text: string, max: number): string {
+  return text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text;
 }
 
 @Component({
   selector: 'app-writing',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RevealDirective, EchoTitleDirective],
+  imports: [RouterLink, RevealDirective, EchoTitleDirective],
   template: `
     <section id="writing" class="section">
       <div class="wrap">
@@ -24,8 +35,8 @@ interface Post {
           <span class="sec-num">SEC.04 / OUTPUT</span>
         </div>
         <div class="posts">
-          @for (post of posts(); track post.ref) {
-            <a class="post" appReveal [href]="post.url" target="_blank" rel="noopener noreferrer">
+          @for (post of posts; track post.slug) {
+            <a class="post" appReveal [routerLink]="['/blog', post.slug]">
               <span class="pn">{{ post.ref }}</span>
               <div>
                 <h3>{{ post.title }}</h3>
@@ -35,27 +46,21 @@ interface Post {
             </a>
           }
         </div>
+        <div style="margin-top:24px;text-align:center">
+          <a class="btn ghost" routerLink="/blog">Read all posts →</a>
+        </div>
       </div>
     </section>
   `,
 })
 export class WritingComponent {
-  private readonly medium = inject(MediumService);
-  private readonly livePosts = toSignal(this.medium.load(), {
-    initialValue: [] as MediumPost[],
-  });
+  private readonly blog = inject(BlogService);
 
-  /** Live Medium posts when available, otherwise the curated static list. */
-  protected readonly posts = computed<readonly Post[]>(() => {
-    const live = this.livePosts();
-    if (live.length) {
-      return live.map((p, i) => ({
-        ref: `LOG.${String(i + 1).padStart(3, '0')}`,
-        title: p.title,
-        blurb: p.date ? `${p.date} · ${p.blurb}` : p.blurb,
-        url: p.url,
-      }));
-    }
-    return PORTFOLIO.writing;
-  });
+  /** The three most recent native blog posts, linked internally to /blog/:slug. */
+  protected readonly posts: readonly WritingEntry[] = this.blog.posts.slice(0, 3).map((p, i) => ({
+    ref: `LOG.${String(i + 1).padStart(3, '0')}`,
+    slug: p.slug,
+    title: p.title,
+    blurb: `${formatDate(p.date)} · ${p.readingTime} · ${truncate(p.description, 96)}`,
+  }));
 }
