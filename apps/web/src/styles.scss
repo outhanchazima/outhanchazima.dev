@@ -281,54 +281,6 @@ a {
 }
 
 /* ============== INTERACTIONS (senior UX polish) ============== */
-/* cursor-tracking spotlight glow on cards (see SpotlightDirective) */
-.has-spotlight {
-  position: relative;
-  isolation: isolate;
-}
-.has-spotlight::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  opacity: 0;
-  pointer-events: none;
-  background: radial-gradient(
-    260px circle at var(--mx, 50%) var(--my, 50%),
-    color-mix(in srgb, var(--signal) 22%, transparent),
-    transparent 60%
-  );
-  transition: opacity 0.35s ease;
-}
-.has-spotlight:hover::after {
-  opacity: 1;
-}
-/* a hairline that lights up with the cursor too */
-.has-spotlight::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  padding: 1px;
-  opacity: 0;
-  pointer-events: none;
-  background: radial-gradient(
-    240px circle at var(--mx, 50%) var(--my, 50%),
-    color-mix(in srgb, var(--signal) 60%, transparent),
-    transparent 55%
-  );
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  transition: opacity 0.35s ease;
-}
-.has-spotlight:hover::before {
-  opacity: 0.9;
-}
-
 /* magnetic buttons spring smoothly back on leave (see MagneticDirective) */
 .is-magnetic {
   transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);

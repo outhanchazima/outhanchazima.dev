@@ -2,12 +2,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { PORTFOLIO } from '../../core/data/portfolio.data';
 import { RevealDirective } from '../../shared/reveal.directive';
 import { EchoTitleDirective } from '../../shared/echo-title.directive';
-import { SpotlightDirective } from '../../shared/spotlight.directive';
 
 @Component({
   selector: 'app-certifications',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RevealDirective, EchoTitleDirective, SpotlightDirective],
+  imports: [RevealDirective, EchoTitleDirective],
   template: `
     <section id="credentials" class="section">
       <div class="wrap">
@@ -17,7 +16,7 @@ import { SpotlightDirective } from '../../shared/spotlight.directive';
         </div>
         <div class="creds">
           @for (cert of certifications; track cert.title) {
-            <div class="cred" appReveal appSpotlight>
+            <div class="cred" appReveal>
               <span class="yr">{{ cert.year }}</span>
               <div>
                 <h3>{{ cert.title }}</h3>
