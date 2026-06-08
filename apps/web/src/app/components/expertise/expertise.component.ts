@@ -2,11 +2,12 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { PORTFOLIO } from '../../core/data/portfolio.data';
 import { RevealDirective } from '../../shared/reveal.directive';
 import { EchoTitleDirective } from '../../shared/echo-title.directive';
+import { SpotlightDirective } from '../../shared/spotlight.directive';
 
 @Component({
   selector: 'app-expertise',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RevealDirective, EchoTitleDirective],
+  imports: [RevealDirective, EchoTitleDirective, SpotlightDirective],
   template: `
     <section id="expertise" class="section">
       <div class="wrap">
@@ -16,7 +17,7 @@ import { EchoTitleDirective } from '../../shared/echo-title.directive';
         </div>
         <div class="nodes">
           @for (node of nodes; track node.id) {
-            <div class="node" appReveal>
+            <div class="node" appReveal appSpotlight>
               <span class="node-id">{{ node.id }}</span>
               <h3>{{ node.title }}</h3>
               <p>{{ node.description }}</p>

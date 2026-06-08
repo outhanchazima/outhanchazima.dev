@@ -65,7 +65,9 @@ function slugify(s: string): string {
 }
 
 async function createMarkdown(): Promise<MarkdownIt> {
-  const md = new MarkdownIt({ html: false, linkify: true, typographer: true });
+  // html:true — blog posts are the site owner's own trusted Markdown, rendered
+  // at BUILD time (never user input), and rely on inline SVG <figure> diagrams.
+  const md = new MarkdownIt({ html: true, linkify: true, typographer: true });
   md.use(
     await Shiki({
       themes: { light: 'github-light', dark: 'github-dark' },

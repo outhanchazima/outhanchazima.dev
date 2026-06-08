@@ -10,10 +10,13 @@ import {
 import { isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { PORTFOLIO } from '../../core/data/portfolio.data';
+import { CountUpDirective } from '../../shared/count-up.directive';
+import { MagneticDirective } from '../../shared/magnetic.directive';
 
 @Component({
   selector: 'app-hero',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CountUpDirective, MagneticDirective],
   template: `
     <header id="top" class="hero">
       <a class="hero-scroll" href="#expertise" aria-label="Scroll to content">
@@ -27,13 +30,13 @@ import { PORTFOLIO } from '../../core/data/portfolio.data';
           <p class="hero-sub reveal d3" [innerHTML]="tagline"></p>
 
           <div class="btn-row reveal d4">
-            <a class="btn primary" href="#contact">Start a conversation</a>
+            <a class="btn primary" href="#contact" appMagnetic>Start a conversation</a>
             <a class="btn ghost" href="#experience">View the build log ↓</a>
           </div>
 
           <div class="hero-meta reveal d5">
             @for (item of profile.meta; track item.label) {
-              <div><b>{{ item.value }}</b>{{ item.label }}</div>
+              <div><b [appCountUp]="item.value">{{ item.value }}</b>{{ item.label }}</div>
             }
           </div>
         </div>

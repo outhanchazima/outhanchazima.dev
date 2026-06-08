@@ -6,6 +6,7 @@ import { RevealDirective } from '../../shared/reveal.directive';
 import { AnalyticsService } from '../../core/services/analytics.service';
 import { CONTACT, CONTACT_FORM_ENABLED } from '../../core/config/contact.config';
 import { CalEmbedComponent } from './cal-embed.component';
+import { MagneticDirective } from '../../shared/magnetic.directive';
 
 type Status = 'idle' | 'sending' | 'sent' | 'error';
 type Tab = 'message' | 'meeting';
@@ -16,7 +17,7 @@ const TOPICS = ['Full-time role', 'Freelance project', 'Just saying hi', 'Bug re
 @Component({
   selector: 'app-contact',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RevealDirective, ReactiveFormsModule, CalEmbedComponent],
+  imports: [RevealDirective, ReactiveFormsModule, CalEmbedComponent, MagneticDirective],
   template: `
     <section id="contact" class="section">
       <div class="wrap">
@@ -126,7 +127,7 @@ const TOPICS = ['Full-time role', 'Freelance project', 'Just saying hi', 'Bug re
                 <span>I agree that my submitted data is collected and stored to respond to my inquiry.</span>
               </label>
 
-              <button type="submit" class="btn primary cf-submit" [disabled]="!canSubmit()">
+              <button type="submit" class="btn primary cf-submit" appMagnetic [disabled]="!canSubmit()">
                 {{ status() === 'sending' ? 'Sending…' : 'Send Message' }}
                 <span aria-hidden="true">→</span>
               </button>

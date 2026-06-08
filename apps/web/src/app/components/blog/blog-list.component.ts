@@ -5,13 +5,14 @@ import { NgOptimizedImage } from '@angular/common';
 import { BlogService } from '../../core/services/blog.service';
 import { SeoService } from '../../core/services/seo.service';
 import { EchoTitleDirective } from '../../shared/echo-title.directive';
+import { SpotlightDirective } from '../../shared/spotlight.directive';
 
 const SITE_URL = 'https://outhanchazima.dev';
 
 @Component({
   selector: 'app-blog-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, DatePipe, NgOptimizedImage, EchoTitleDirective],
+  imports: [RouterLink, DatePipe, NgOptimizedImage, EchoTitleDirective, SpotlightDirective],
   template: `
     <section class="section blog-index">
       <div class="wrap">
@@ -48,7 +49,7 @@ const SITE_URL = 'https://outhanchazima.dev';
 
         <div class="blog-grid">
           @for (post of filtered(); track post.slug) {
-            <a class="blog-card" [routerLink]="['/blog', post.slug]">
+            <a class="blog-card" [routerLink]="['/blog', post.slug]" appSpotlight>
               @if (post.cover) {
                 <span class="blog-card-cover">
                   <img [ngSrc]="post.cover" fill [alt]="post.title" sizes="(max-width: 760px) 100vw, 360px" />

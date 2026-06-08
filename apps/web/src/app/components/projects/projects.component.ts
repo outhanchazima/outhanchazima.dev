@@ -2,11 +2,12 @@ import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/c
 import { PORTFOLIO } from '../../core/data/portfolio.data';
 import { RevealDirective } from '../../shared/reveal.directive';
 import { EchoTitleDirective } from '../../shared/echo-title.directive';
+import { SpotlightDirective } from '../../shared/spotlight.directive';
 
 @Component({
   selector: 'app-projects',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RevealDirective, EchoTitleDirective],
+  imports: [RevealDirective, EchoTitleDirective, SpotlightDirective],
   template: `
     <section id="work" class="section">
       <div class="wrap">
@@ -17,7 +18,7 @@ import { EchoTitleDirective } from '../../shared/echo-title.directive';
 
         <div class="work">
           @for (project of visible(); track project.name) {
-            <article class="work-card" appReveal>
+            <article class="work-card" appReveal appSpotlight>
               <div class="work-top">
                 <span class="work-tag">{{ project.tag }}</span>
                 @if (project.repo) {

@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
+import { IconComponent } from '../../shared/icon.component';
 import { ViewportService } from '../../core/services/viewport.service';
 
 interface NavLink {
-  readonly num: string;
   readonly label: string;
   readonly fragment: string;
 }
@@ -14,25 +14,38 @@ interface NavLink {
 @Component({
   selector: 'app-navbar',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ThemeToggleComponent, RouterLink, RouterLinkActive],
+  imports: [ThemeToggleComponent, IconComponent, RouterLink, RouterLinkActive],
   template: `
-    <nav class="nav">
+    <nav class="nav" [class.menu-open]="menuOpen()">
       <div class="nav-inner">
-        <a routerLink="/" fragment="top" class="logo"><span class="dot"></span>OUTHAN.CHAZIMA</a>
+        <a routerLink="/" fragment="top" class="logo" (click)="closeMenu()">
+          <span class="dot"></span>OUTHAN.CHAZIMA
+        </a>
         <div class="nav-right">
-          <div class="nav-links">
+          <div class="nav-links" id="nav-menu">
             @for (link of links; track link.fragment) {
               <a
                 routerLink="/"
                 [fragment]="link.fragment"
+                (click)="closeMenu()"
                 [class.active]="onHome() && viewport.activeId() === link.fragment"
               >
-                <span>{{ link.num }}</span>{{ link.label }}
+                {{ link.label }}
               </a>
             }
-            <a routerLink="/blog" routerLinkActive="active"><span>08</span>Blog</a>
+            <a routerLink="/blog" routerLinkActive="active" (click)="closeMenu()">Blog</a>
           </div>
           <app-theme-toggle />
+          <button
+            type="button"
+            class="nav-toggle"
+            (click)="toggleMenu()"
+            [attr.aria-expanded]="menuOpen()"
+            aria-controls="nav-menu"
+            [attr.aria-label]="menuOpen() ? 'Close menu' : 'Open menu'"
+          >
+            <app-icon [name]="menuOpen() ? 'close' : 'menu'" [size]="18" />
+          </button>
         </div>
       </div>
       <div class="nav-progress" [style.width.%]="viewport.progress()"></div>
@@ -42,6 +55,8 @@ interface NavLink {
 export class NavbarComponent {
   protected readonly viewport = inject(ViewportService);
   private readonly router = inject(Router);
+
+  protected readonly menuOpen = signal(false);
 
   private readonly url = toSignal(
     this.router.events.pipe(
@@ -53,12 +68,24 @@ export class NavbarComponent {
   protected readonly onHome = computed(() => !this.url().startsWith('/blog'));
 
   protected readonly links: readonly NavLink[] = [
-    { num: '01', label: 'Expertise', fragment: 'expertise' },
-    { num: '02', label: 'Stack', fragment: 'skills' },
-    { num: '03', label: 'Work', fragment: 'work' },
-    { num: '04', label: 'Experience', fragment: 'experience' },
-    { num: '05', label: 'Principles', fragment: 'principles' },
-    { num: '06', label: 'Writing', fragment: 'writing' },
-    { num: '07', label: 'Contact', fragment: 'contact' },
+    { label: 'Work', fragment: 'work' },
+    { label: 'Experience', fragment: 'experience' },
+    { label: 'Contact', fragment: 'contact' },
   ];
+
+  constructor() {
+    // Close the mobile menu whenever the route changes.
+    effect(() => {
+      this.url();
+      this.menuOpen.set(false);
+    });
+  }
+
+  protected toggleMenu(): void {
+    this.menuOpen.update((open) => !open);
+  }
+
+  protected closeMenu(): void {
+    this.menuOpen.set(false);
+  }
 }

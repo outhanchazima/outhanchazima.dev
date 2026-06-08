@@ -258,24 +258,44 @@ export class BlogPostComponent {
   }
 
   private addCopyButtons(): void {
-    const blocks = this.elRef.nativeElement.querySelectorAll<HTMLElement>('pre.shiki');
+    const doc = this.document;
+    const copyIcon =
+      '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+    const checkIcon =
+      '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+
+    const blocks = doc.querySelectorAll<HTMLElement>('app-blog-post pre.shiki');
     blocks.forEach((pre) => {
-      if (pre.querySelector('.code-copy')) return;
-      const btn = this.document.createElement('button');
+      // Wrap the (horizontally-scrolling) <pre> so the button can be pinned to a
+      // non-scrolling container — it stays top-right while the code scrolls.
+      if (pre.parentElement?.classList.contains('code-block')) return;
+      const wrap = doc.createElement('div');
+      wrap.className = 'code-block';
+      pre.parentNode?.insertBefore(wrap, pre);
+      wrap.appendChild(pre);
+
+      const btn = doc.createElement('button');
       btn.type = 'button';
       btn.className = 'code-copy';
-      btn.textContent = 'Copy';
+      btn.setAttribute('aria-label', 'Copy code');
+      btn.innerHTML = copyIcon;
       btn.addEventListener('click', async () => {
         const code = pre.querySelector('code')?.textContent ?? '';
         try {
-          await this.document.defaultView?.navigator.clipboard.writeText(code);
-          btn.textContent = 'Copied!';
-          this.document.defaultView?.setTimeout(() => (btn.textContent = 'Copy'), 1500);
+          await doc.defaultView?.navigator.clipboard.writeText(code);
+          btn.innerHTML = checkIcon;
+          btn.classList.add('copied');
+          btn.setAttribute('aria-label', 'Copied');
+          doc.defaultView?.setTimeout(() => {
+            btn.innerHTML = copyIcon;
+            btn.classList.remove('copied');
+            btn.setAttribute('aria-label', 'Copy code');
+          }, 1500);
         } catch {
           /* clipboard blocked */
         }
       });
-      pre.appendChild(btn);
+      wrap.appendChild(btn);
     });
   }
 

@@ -210,6 +210,22 @@ a {
   align-items: center;
   gap: 28px;
 }
+/* mobile menu button — hidden on desktop */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.25s;
+}
+.nav-toggle:hover {
+  color: var(--signal);
+}
 .nav-links {
   display: flex;
   gap: 26px;
@@ -262,6 +278,89 @@ a {
 }
 .toggle:hover {
   color: var(--signal);
+}
+
+/* ============== INTERACTIONS (senior UX polish) ============== */
+/* cursor-tracking spotlight glow on cards (see SpotlightDirective) */
+.has-spotlight {
+  position: relative;
+  isolation: isolate;
+}
+.has-spotlight::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    260px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--signal) 22%, transparent),
+    transparent 60%
+  );
+  transition: opacity 0.35s ease;
+}
+.has-spotlight:hover::after {
+  opacity: 1;
+}
+/* a hairline that lights up with the cursor too */
+.has-spotlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 1px;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    240px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--signal) 60%, transparent),
+    transparent 55%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  transition: opacity 0.35s ease;
+}
+.has-spotlight:hover::before {
+  opacity: 0.9;
+}
+
+/* magnetic buttons spring smoothly back on leave (see MagneticDirective) */
+.is-magnetic {
+  transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: transform;
+}
+
+/* animated nav-link underline */
+.nav-links a {
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 1px;
+  background: var(--signal);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.nav-links a:hover::after,
+.nav-links a.active::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-magnetic {
+    transition: none;
+  }
 }
 
 /* ============================ HERO =========================== */
@@ -905,7 +1004,36 @@ h2.echo::before {
   }
 }
 @media (max-width: 640px) {
+  .nav-toggle {
+    display: inline-flex;
+  }
+  /* links collapse into a dropdown panel under the nav */
   .nav-links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0;
+    padding: 8px 0;
+    font-size: 14px;
+    background: color-mix(in srgb, var(--ink) 94%, transparent);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    transform: translateY(-8px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
+  }
+  .nav.menu-open .nav-links {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+  .nav-links a {
+    padding: 14px 32px;
+  }
+  .nav-links a::after {
     display: none;
   }
   .nodes {
@@ -2031,7 +2159,6 @@ h2.echo::before {
 }
 /* fenced code blocks (Shiki) */
 .prose pre.shiki {
-  position: relative;
   margin: 1.4em 0;
   padding: 18px 20px;
   border-radius: 8px;
@@ -2042,30 +2169,49 @@ h2.echo::before {
 .prose pre.shiki code {
   font-family: var(--mono);
 }
-/* copy-to-clipboard button injected on each code block */
+/* wrapper (added in JS) keeps the copy button out of the scrolling <pre> */
+.prose .code-block {
+  position: relative;
+  margin: 1.4em 0;
+}
+.prose .code-block pre.shiki {
+  margin: 0;
+}
+/* copy-to-clipboard button — an icon pinned to the top-right of the block,
+   staying put while the code scrolls horizontally */
 .code-copy {
   position: absolute;
   top: 8px;
   right: 8px;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
   color: var(--muted);
-  background: color-mix(in srgb, var(--ink-2) 80%, transparent);
+  background: color-mix(in srgb, var(--ink-2) 86%, transparent);
   border: 1px solid var(--line);
-  padding: 5px 10px;
   border-radius: 6px;
   cursor: pointer;
   opacity: 0;
-  transition: opacity 0.2s, color 0.2s;
+  backdrop-filter: blur(4px);
+  transition: opacity 0.2s, color 0.2s, border-color 0.2s;
 }
-.prose pre.shiki:hover .code-copy,
+.code-copy svg {
+  display: block;
+}
+.prose .code-block:hover .code-copy,
 .code-copy:focus-visible {
   opacity: 1;
 }
 .code-copy:hover {
   color: var(--signal);
+  border-color: var(--signal);
+}
+.code-copy.copied {
+  color: var(--cyan);
+  border-color: var(--cyan);
+  opacity: 1;
 }
 @media (hover: none) {
   .code-copy {

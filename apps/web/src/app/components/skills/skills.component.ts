@@ -15,6 +15,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { PORTFOLIO } from '../../core/data/portfolio.data';
 import { RevealDirective } from '../../shared/reveal.directive';
 import { EchoTitleDirective } from '../../shared/echo-title.directive';
+import { SpotlightDirective } from '../../shared/spotlight.directive';
 
 type Cat = 'ai' | 'lang' | 'tool';
 
@@ -51,7 +52,7 @@ const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
 @Component({
   selector: 'app-skills',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RevealDirective, EchoTitleDirective],
+  imports: [RevealDirective, EchoTitleDirective, SpotlightDirective],
   template: `
     <section id="skills" class="section">
       <div class="wrap">
@@ -77,7 +78,7 @@ const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
         } @else {
           <div class="stack">
             @for (group of groups; track group.id) {
-              <div class="stack-row" appReveal>
+              <div class="stack-row" appReveal appSpotlight>
                 <div class="stack-meta">
                   <span class="stack-id">{{ group.id }}</span>
                   <h3>{{ group.title }}</h3>
