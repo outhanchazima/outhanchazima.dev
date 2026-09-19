@@ -2,7 +2,7 @@
 
 Senior software engineer portfolio for **Outhan Chazima** — system design & architecture, scalable production systems.
 
-Server-side rendered for SEO, served on **Bun**, deployed to a private Linux server and exposed via a **Cloudflare Tunnel** (no open inbound ports).
+Server-side rendered for SEO, served on **Bun**. Two deploy paths: a private Linux server behind a **Cloudflare Tunnel**, or **Cloudflare Workers**.
 
 ---
 
@@ -20,7 +20,7 @@ Server-side rendered for SEO, served on **Bun**, deployed to a private Linux ser
 | SEO          | SSR meta + Open Graph + Twitter cards + JSON-LD, per-post OG images, sitemap, RSS, robots |
 | Analytics    | PostHog (consent-gated, lazy-loaded) — pageviews, web vitals, session replay |
 | Integrations | Contact form (Web3Forms) + inline booking calendar (Cal.com)      |
-| Delivery     | Docker (multi-stage) + Cloudflare Tunnel (`cloudflared`)          |
+| Delivery     | Docker + Cloudflare Tunnel, **or** Cloudflare Workers (`wrangler`) |
 
 ## Repository layout
 
@@ -41,6 +41,7 @@ outhanchazima.dev/
 │       │   │   │   └── services/        # seo, blog, analytics, github, medium, viewport, theme
 │       │   │   └── shared/              # icon component, reveal + echo-title directives
 │       │   ├── server.ts        # Bun/Express SSR entry (+ /healthz)
+│       │   ├── server.workers.ts # Cloudflare Workers SSR entry
 │       │   ├── index.html       # base SEO + no-flash theme bootstrap
 │       │   ├── styles.scss      # the "blueprint" design system + theming
 │       │   └── tailwind.css     # Tailwind entry (utilities + dark variant)
@@ -55,8 +56,9 @@ outhanchazima.dev/
 │   ├── docker-compose.yml       # web + cloudflared (token-based tunnel)
 │   ├── docker-compose.cloudflared-config.yml  # config-file tunnel override
 │   ├── cloudflared/             # tunnel config template (secrets git-ignored)
-│   ├── scripts/                 # deploy.sh, setup-tunnel.sh
+│   ├── scripts/                 # deploy.sh, deploy-workers.sh, setup-tunnel.sh
 │   └── .env.example
+├── wrangler.jsonc               # Cloudflare Workers (SSR + Workers Assets)
 ├── package.json                 # workspace root + scripts
 └── README.md
 ```
@@ -82,6 +84,9 @@ bun run start          # run the built SSR server on Bun → http://localhost:40
 bun run test           # unit tests
 bun run blog           # regenerate blog data, RSS, sitemap + per-post OG images
 bun run assets         # regenerate the site OG image + icons from SVG sources
+bun run build:workers  # production SSR build targeting Cloudflare Workers
+bun run preview:workers  # build + wrangler dev (local Workers runtime)
+bun run deploy:workers # build + wrangler deploy
 ```
 
 > `bun run dev`, `bun run build` and `bun run start` all run the blog generator
@@ -278,6 +283,65 @@ docker compose -f deploy/docker-compose.yml \
   pre-set to the production domains in `deploy/.env.example` and the compose file.
 - The web container is **not** published to the host; only `cloudflared` can reach it.
 - Health probe: `GET /healthz` (bypasses SSR/host checks).
+
+## Deployment (Cloudflare Workers)
+
+The same Angular SSR app can run on the Workers edge: prerendered HTML and
+hashed assets are served from **Workers Assets**, and `src/server.workers.ts`
+handles SSR fallbacks via `AngularAppEngine` (Web-standard `Request`/`Response`,
+`ssr.platform: "neutral"`). The existing Docker/`bun run deploy` path is
+unchanged.
+
+### 1. Authenticate Wrangler (once per machine)
+
+```bash
+bunx wrangler login
+```
+
+### 2. Deploy
+
+```bash
+bun run deploy:workers          # or: ./deploy/scripts/deploy-workers.sh
+```
+
+This builds the Workers bundle (`ng build --configuration production,workers`),
+writes security headers for static assets, and runs `wrangler deploy`. The
+Worker is live on `https://outhanchazima-dev.<your-subdomain>.workers.dev`.
+
+Local preview of that same bundle:
+
+```bash
+bun run preview:workers
+```
+
+Dry-run the upload without publishing:
+
+```bash
+./deploy/scripts/deploy-workers.sh --dry-run
+```
+
+### 3. Point the production domain at the Worker (optional)
+
+The tunnel and the Worker should not both own the same hostname. When you want
+Workers to be the public origin, add custom domains in `wrangler.jsonc`:
+
+```jsonc
+"routes": [
+  { "pattern": "outhanchazima.dev", "custom_domain": true },
+  { "pattern": "www.outhanchazima.dev", "custom_domain": true }
+]
+```
+
+Then redeploy and remove (or disable) the matching tunnel public hostnames so
+DNS is not split.
+
+### Notes
+
+- First deploy only needs a Cloudflare account + `wrangler login`. No Docker,
+  no `deploy/.env`, no tunnel token.
+- The Workers build allow-lists the production domains plus `*.workers.dev`, so
+  SSR accepts both the apex and the Wrangler preview URL.
+- Health probe is the same: `GET /healthz`.
 
 ## License
 

@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "outhanchazima-dev",
+  "compatibility_date": "2026-09-19",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "apps/web/dist/workers/server/server.mjs",
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "apps/web/dist/workers/browser",
+    "html_handling": "auto-trailing-slash"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

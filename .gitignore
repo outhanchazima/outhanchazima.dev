@@ -29,6 +29,9 @@ deploy/cloudflared/*.json
 deploy/cloudflared/cert.pem
 deploy/cloudflared/config.yml
 
+# Wrangler local state (Workers deploy)
+.wrangler/
+
 # ──────────────────── Testing & coverage ────────────────────────
 coverage/
 /out-tsc

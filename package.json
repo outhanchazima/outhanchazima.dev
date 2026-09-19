@@ -21,6 +21,12 @@
     "docker:up": "docker compose -f deploy/docker-compose.yml up -d",
     "docker:down": "docker compose -f deploy/docker-compose.yml down",
     "docker:logs": "docker compose -f deploy/docker-compose.yml logs -f",
-    "deploy": "bash deploy/scripts/deploy.sh"
+    "deploy": "bash deploy/scripts/deploy.sh",
+    "build:workers": "cd apps/web && bun run build:workers",
+    "preview:workers": "bun run build:workers && wrangler dev",
+    "deploy:workers": "bash deploy/scripts/deploy-workers.sh"
+  },
+  "devDependencies": {
+    "wrangler": "^4.68.0"
   }
 }

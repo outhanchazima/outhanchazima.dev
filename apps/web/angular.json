@@ -69,6 +69,22 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "workers": {
+              "outputPath": "dist/workers",
+              "ssr": {
+                "entry": "src/server.workers.ts",
+                "platform": "neutral"
+              },
+              "security": {
+                "allowedHosts": [
+                  "localhost",
+                  "127.0.0.1",
+                  "outhanchazima.dev",
+                  "www.outhanchazima.dev",
+                  "*.workers.dev"
+                ]
+              }
             }
           },
           "defaultConfiguration": "production"

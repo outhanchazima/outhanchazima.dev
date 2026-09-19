@@ -8,6 +8,10 @@
     "start": "ng serve",
     "prebuild": "bun run tools/build-blog.ts",
     "build": "ng build",
+    "prebuild:workers": "bun run tools/build-blog.ts",
+    "build:workers": "ng build --configuration production,workers && bun run tools/write-workers-headers.ts",
+    "preview:workers": "bun run build:workers && wrangler dev --config ../../wrangler.jsonc",
+    "deploy:workers": "bun run build:workers && wrangler deploy --config ../../wrangler.jsonc",
     "prewatch": "bun run tools/build-blog.ts",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -51,6 +55,7 @@
     "reading-time": "^1.5.0",
     "tailwindcss": "^4.1.12",
     "typescript": "~6.0.2",
-    "vitest": "^4.0.8"
+    "vitest": "^4.0.8",
+    "xhr2": "^0.2.1"
   }
 }
