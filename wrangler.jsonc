@@ -11,5 +11,9 @@
   },
   "observability": {
     "enabled": true
-  }
+  },
+  "routes": [
+  { "pattern": "outhanchazima.dev", "custom_domain": true },
+  { "pattern": "www.outhanchazima.dev", "custom_domain": true }
+]
 }
